@@ -18,7 +18,7 @@
     "use_dynamic_url": true
   }],
   "action": {
-    "default_popup": "home.html",
+    "default_popup": "popup.html",
     "default_icon": {
       "16": "src/img/16.png",
       "32": "src/img/32.png",
