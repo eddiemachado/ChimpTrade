@@ -1,2 +1,2 @@
-# chimptrade
- A browser extension to help you trade crypto
+# Chimp Trade
+ A browser extension to help you trade crypto.
