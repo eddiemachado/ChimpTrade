@@ -2,6 +2,10 @@
 Base Functions
 **/
 
+// variables
+var btcPrice;
+var ethPrice;
+
 
 // first get the color scheme if they've chosen one
 chrome.storage.sync.get('theme', function(data) {
@@ -26,7 +30,7 @@ chrome.storage.sync.get('tradingHelp', function(data) {
   // if they haven't removed it, then let's show it
   if (data.tradingHelp !== 'false') {
     // insert the help message
-    $('#tab-1').prepend('<div id="help-trading"class="help onboarding"><button class="close" data-close="help-trading"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.295 7.705C15.9056 7.31564 15.2744 7.31564 14.885 7.705L12 10.59L9.115 7.705C8.72564 7.31564 8.09436 7.31564 7.705 7.705V7.705C7.31564 8.09436 7.31564 8.72564 7.705 9.115L10.59 12L7.705 14.885C7.31564 15.2744 7.31564 15.9056 7.705 16.295V16.295C8.09436 16.6844 8.72564 16.6844 9.115 16.295L12 13.41L14.885 16.295C15.2744 16.6844 15.9056 16.6844 16.295 16.295V16.295C16.6844 15.9056 16.6844 15.2744 16.295 14.885L13.41 12L16.295 9.115C16.6844 8.72564 16.6844 8.09436 16.295 7.705V7.705Z" fill="black" fill-opacity="0.4"/></svg></button><p>Use this to calculate a potential trade. New to trading? <a href="#">Learn more</a></p></div>');
+    $('#tab-1').prepend('<div id="help-trading"class="help onboarding"><button class="close" data-close="help-trading"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.295 7.705C15.9056 7.31564 15.2744 7.31564 14.885 7.705L12 10.59L9.115 7.705C8.72564 7.31564 8.09436 7.31564 7.705 7.705V7.705C7.31564 8.09436 7.31564 8.72564 7.705 9.115L10.59 12L7.705 14.885C7.31564 15.2744 7.31564 15.9056 7.705 16.295V16.295C8.09436 16.6844 8.72564 16.6844 9.115 16.295L12 13.41L14.885 16.295C15.2744 16.6844 15.9056 16.6844 16.295 16.295V16.295C16.6844 15.9056 16.6844 15.2744 16.295 14.885L13.41 12L16.295 9.115C16.6844 8.72564 16.6844 8.09436 16.295 7.705V7.705Z" fill="black" fill-opacity="0.4"/></svg></button><p>Use this to calculate a potential trade.<br /><strong>Investment:</strong> is how much you put in<br /><strong>Entry:</strong> is the price you\'re buying at<br /><strong>Exit:</strong> is your sell target</p></div>');
   }
 });
 
@@ -36,7 +40,7 @@ chrome.storage.sync.get('marketcapHelp', function(data) {
   // if they haven't removed it, then let's show it
   if (data.marketcapHelp !== 'false') {
     // insert the help message
-    $('#tab-2').prepend('<div id="help-marketcap" class="help onboarding"><button class="close" data-close="help-marketcap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.295 7.705C15.9056 7.31564 15.2744 7.31564 14.885 7.705L12 10.59L9.115 7.705C8.72564 7.31564 8.09436 7.31564 7.705 7.705V7.705C7.31564 8.09436 7.31564 8.72564 7.705 9.115L10.59 12L7.705 14.885C7.31564 15.2744 7.31564 15.9056 7.705 16.295V16.295C8.09436 16.6844 8.72564 16.6844 9.115 16.295L12 13.41L14.885 16.295C15.2744 16.6844 15.9056 16.6844 16.295 16.295V16.295C16.6844 15.9056 16.6844 15.2744 16.295 14.885L13.41 12L16.295 9.115C16.6844 8.72564 16.6844 8.09436 16.295 7.705V7.705Z" fill="black" fill-opacity="0.4"/></svg></button><p>Calculate the potential marketcap of a coin. <a href="https://www.youtube.com/watch?v=ziQwtcNUIaU">Learn more</a></p></div>');
+    $('#tab-2').prepend('<div id="help-marketcap" class="help onboarding"><button class="close" data-close="help-marketcap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.295 7.705C15.9056 7.31564 15.2744 7.31564 14.885 7.705L12 10.59L9.115 7.705C8.72564 7.31564 8.09436 7.31564 7.705 7.705V7.705C7.31564 8.09436 7.31564 8.72564 7.705 9.115L10.59 12L7.705 14.885C7.31564 15.2744 7.31564 15.9056 7.705 16.295V16.295C8.09436 16.6844 8.72564 16.6844 9.115 16.295L12 13.41L14.885 16.295C15.2744 16.6844 15.9056 16.6844 16.295 16.295V16.295C16.6844 15.9056 16.6844 15.2744 16.295 14.885L13.41 12L16.295 9.115C16.6844 8.72564 16.6844 8.09436 16.295 7.705V7.705Z" fill="black" fill-opacity="0.4"/></svg></button><p>Calculate the potential marketcap of a coin. <a href="https://www.youtube.com/watch?v=ziQwtcNUIaU">Why this matters</a></p></div>');
   }
 });
 
@@ -53,7 +57,7 @@ chrome.storage.sync.get('alertHelp', function(data) {
 
 
 // update the price in the header based on the gas prices
-function updatePrice() {
+function updatePrices() {
   chrome.storage.sync.get('slow', function(data) {
     // display the values in the header
     document.getElementById('gas-slow').innerHTML = data.slow;
@@ -65,6 +69,21 @@ function updatePrice() {
   chrome.storage.sync.get('fast', function(data) {
     // display the values in the header
     document.getElementById('gas-fast').innerHTML = data.fast;
+  });
+  chrome.storage.sync.get('btcPrice', function(data) {
+    btcPrice = data.btcPrice;
+    document.getElementById('mc-btc-mc').innerHTML = data.btcMarketCap;
+    console.log(data.btcPrice + ' ' + data.btcMarketCap);
+  });
+  chrome.storage.sync.get('ethPrice', function(data) {
+    ethPrice = data.ethPrice;
+    document.getElementById('mc-eth-mc').innerHTML = data.ethMarketCap;
+  });
+  chrome.storage.sync.get('btcMarketCap', function(data) {
+    document.getElementById('mc-btc-mc').innerHTML = (numeral(data.btcMarketCap).format('$0,0'));
+  });
+  chrome.storage.sync.get('ethMarketCap', function(data) {
+    document.getElementById('mc-eth-mc').innerHTML = (numeral(data.ethMarketCap).format('$0,0'));
   });
 }
 
@@ -107,7 +126,7 @@ chrome.storage.local.get('coinData', function(data) {
 
 
 // initial price update when you open the popup
-updatePrice();
+updatePrices();
 
 
 // functional javascript stuff
@@ -159,6 +178,13 @@ jQuery( document ).ready(function($) {
   });
 
 
+
+
+
+  //
+  // keyups and typing functions
+  //
+
   // calculating the trade
   $(document).on('keyup', '.input-trade-live', function() {
     // run the calculation
@@ -208,7 +234,7 @@ jQuery( document ).ready(function($) {
   }, 500));
 
   // when i exit the field, then format it properly
-  $(document).on('focusout', '.input-mc-live', function() {
+  $(document).on('focusout', '.input-mc-live, .input-target-live', function() {
     // get the value of what the user is typing
     var value = $(this).val();
     // format the value
@@ -221,18 +247,21 @@ jQuery( document ).ready(function($) {
 
   // when i exit the field, then format it properly
   $(document).on('focusout', '.input-trade-live', function() {
-
+    // get the value of what the user is typing
+    var value = $(this).val();
+    var formatted;
     // only do this if you're calculating in usd
     if ($(this).data('currency') == 'usd') {
-      // get the value of what the user is typing
-      var value = $(this).val();
       // format the value
-      var formatted = numeral(value).format('0,0[.]00');
-      // display the value formatted
-      $(this).val(formatted);
+      formatted = numeral(value).format('0,0[.]00');
     }
-
-
+    // or it's eth or btc
+    else {
+      // format the value
+      formatted = numeral(value).format('0.00000000');
+    }
+    // display the value formatted
+    $(this).val(formatted);
   });
 
   // display the coin select drop down
@@ -434,13 +463,22 @@ function convertCurrency(from, to, input) {
 
   var value = $(input).val();
   var conversion;
-  var btcPrice = '569054.93';
-  var ethPrice = '24059.93';
+
+  chrome.storage.sync.get('btcPrice', function(data) {
+    var btcPrice = data.btcPrice;
+  });
+
+  chrome.storage.sync.get('ethPrice', function(data) {
+    var ethPrice = data.ethPrice;
+  });
 
   console.log('value: ' + value);
   console.log('from: ' + from);
   console.log('to: ' + to);
   console.log('input: ' + input);
+
+  console.log(btcPrice);
+  console.log(ethPrice);
 
   // if you're going usd -> btc
   if ((from === 'usd') && (to === 'btc')) {

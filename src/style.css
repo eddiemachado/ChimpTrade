@@ -63,6 +63,12 @@ Font face
  font-weight: 400;
  src: url('fonts/Lato-Regular.ttf');
 }
+@font-face {
+ font-family: 'Lato';
+ font-style: bold;
+ font-weight: 900;
+ src: url('fonts/Lato-Bold.ttf');
+}
 
 /***
 Theme Agnostic Variables
@@ -365,6 +371,7 @@ header {
 
 .help p {
   font-size: var(--font_12);
+  line-height: 20px;
 }
 
 .help a {
@@ -372,7 +379,7 @@ header {
 }
 
 .help a:hover {
-  color: var(--col_cta);
+  color: var(--text_light);
 }
 
 .help .close {
@@ -638,8 +645,6 @@ label {
 
 
 
-
-
 /*********
 Form Components
 *********/
@@ -658,7 +663,8 @@ Form Components
 
 
 .input, .select {
-  font-family: var(font_poppins);
+  font-family: var(font_lato);
+  font-variant-numeric: tabular-nums;
   color: var(--text_default);
   background: var(--col_input_bg);
   border: 2px solid var(--col_input_border);
@@ -692,9 +698,11 @@ Form Components
   border-color: var(--col_destroy);
 }
 
-.input {
+.input,
+.tabular {
   font-variant-numeric: tabular-nums;
   font-family: var(--font-lato);
+  font-weight: 400;
 }
 
 .input-prefix {
@@ -844,6 +852,9 @@ Trading tab
 ***/
 
 
+#tr-total {
+  font-weight: 900;
+}
 
 /***
 Market Cap tab
@@ -853,6 +864,20 @@ Market Cap tab
 #tab-2 .answer-container .label-floating {
   margin-right: 12px;
 }
+
+.answer-mc .p-subline {
+  font-size: var(--font_16);
+  line-height: 32px;
+}
+
+.answer-mc .p-subline:first-of-type {
+  margin-bottom: 16px;
+}
+
+#mc-est-mc {
+  font-weight: 900;
+}
+
 
 
 /***

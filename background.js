@@ -74,10 +74,40 @@ try {
     });
   }
 
+  // get the coin list and store it in local storage
+  function GetCurrencyData() {
+    // the gas api
+    const apiCall = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum&vs_currencies=usd&include_market_cap=true';
+    // calling the api
+    fetch(apiCall).then(function(res) {
+      // wait for response
+      if (res.status !== 200) {
+        console.log('api refused the connection');
+        return;
+      }
+      res.json().then(function(data) {
+
+        // console.log(data);
+
+        // push that prices into storage
+        chrome.storage.sync.set({ btcPrice: data.bitcoin.usd });
+        chrome.storage.sync.set({ ethPrice: data.ethereum.usd });
+        chrome.storage.sync.set({ btcMarketCap: data.bitcoin.usd_market_cap });
+        chrome.storage.sync.set({ ethMarketCap: data.ethereum.usd_market_cap });
+
+
+
+      });
+    }).catch(function(err) {
+      console.log('api gave an error: ' + err);
+    });
+  }
+
 
   // initial calls when you start the extension
   GetCoinData();
   getGasPrice();
+  GetCurrencyData();
 
 }
 catch(e) {
