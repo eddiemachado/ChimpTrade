@@ -49,7 +49,7 @@ chrome.storage.sync.get('alertHelp', function(data) {
   // if they haven't removed it, then let's show it
   if (data.alertHelp !== 'false') {
     // insert the help message
-    $('#tab-3').prepend('<div id="help-pricealert" class="help onboarding"><button class="close" data-close="help-pricealert"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.295 7.705C15.9056 7.31564 15.2744 7.31564 14.885 7.705L12 10.59L9.115 7.705C8.72564 7.31564 8.09436 7.31564 7.705 7.705V7.705C7.31564 8.09436 7.31564 8.72564 7.705 9.115L10.59 12L7.705 14.885C7.31564 15.2744 7.31564 15.9056 7.705 16.295V16.295C8.09436 16.6844 8.72564 16.6844 9.115 16.295L12 13.41L14.885 16.295C15.2744 16.6844 15.9056 16.6844 16.295 16.295V16.295C16.6844 15.9056 16.6844 15.2744 16.295 14.885L13.41 12L16.295 9.115C16.6844 8.72564 16.6844 8.09436 16.295 7.705V7.705Z" fill="black" fill-opacity="0.4"/></svg></button><p>Setup price alerts for ongoing trades. Each notification can have a custom url.</p></div>');
+    $('#tab-3').prepend('<div id="help-pricealert" class="help onboarding"><button class="close" data-close="help-pricealert"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.295 7.705C15.9056 7.31564 15.2744 7.31564 14.885 7.705L12 10.59L9.115 7.705C8.72564 7.31564 8.09436 7.31564 7.705 7.705V7.705C7.31564 8.09436 7.31564 8.72564 7.705 9.115L10.59 12L7.705 14.885C7.31564 15.2744 7.31564 15.9056 7.705 16.295V16.295C8.09436 16.6844 8.72564 16.6844 9.115 16.295L12 13.41L14.885 16.295C15.2744 16.6844 15.9056 16.6844 16.295 16.295V16.295C16.6844 15.9056 16.6844 15.2744 16.295 14.885L13.41 12L16.295 9.115C16.6844 8.72564 16.6844 8.09436 16.295 7.705V7.705Z" fill="black" fill-opacity="0.4"/></svg></button><p>Setup price alerts for ongoing trades and point them to an exchange.</p></div>');
   }
 });
 
@@ -148,6 +148,8 @@ jQuery( document ).ready(function($) {
     $('.tab-container').removeClass('is-visible');
     // change the tabs
     $('#' + targetTab).addClass('is-visible');
+    // make the first input focused
+    $('#' + targetTab + ' .first-focus').focus();
     return false;
   });
 
@@ -171,10 +173,12 @@ jQuery( document ).ready(function($) {
   //
 
   // calculating the marketcap
-  $("#select-coin").keyup(delay(function (e) {
+  $(document).on('focusout', '#select-coin', function() {
 
     var search = this.value;
-    var priceAPI = 'https://api.coingecko.com/api/v3/simple/price?ids=' + search + '&vs_currencies=usd';
+    var priceAPI = 'https://api.coingecko.com/api/v3/simple/price?ids=' + search + '&vs_currencies=usd&include_market_cap=false';
+
+    console.log(priceAPI);
 
     // calling the api
     fetch(priceAPI).then(function(res) {
@@ -185,11 +189,23 @@ jQuery( document ).ready(function($) {
       }
       res.json().then(function(data) {
 
+        if ( data.length > 0 ) {
+          console.log("Empty return, show error message")
+        }
+        else {
 
+          // have to hack this together
+          var price = search + '.usd';
+          // display all the hidden fields with data
+          $('.alert-fetch-input, #btn-create-alert').removeAttr('hidden');
 
-        $('#alert-price').val(data.usd);
+          console.log(data);
 
-        console.log(data[1].usd);
+          console.log(data[0]);
+
+          $('#alert-price').val(data.solana.usd);
+
+        }
 
 
       });
@@ -197,11 +213,9 @@ jQuery( document ).ready(function($) {
       console.log('api gave an error: ' + err);
     });
 
-    console.log('Time elapsed!', this.value + search);
 
 
-
-  }, 500));
+  });
 
   // when i exit the field, then format it properly
   $(document).on('focusout', '.input-mc-live, .input-target-live', function() {
@@ -220,8 +234,10 @@ jQuery( document ).ready(function($) {
     // get the value of what the user is typing
     var value = $(this).val();
     var formatted;
+    var currency = $('#init-investment').data('currency');
+
     // only do this if you're calculating in usd
-    if ($(this).data('currency') == 'usd') {
+    if (currency == 'usd') {
       // format the value
       formatted = numeral(value).format('0,0[.]00');
     }
@@ -230,6 +246,7 @@ jQuery( document ).ready(function($) {
       // format the value
       formatted = numeral(value).format('0.00000000');
     }
+
     // display the value formatted
     $(this).val(formatted);
   });
@@ -250,8 +267,6 @@ jQuery( document ).ready(function($) {
     var entry = $('#entry-price');
     var exit = $('#exit-price');
     var input = $('#init-investment');
-    var btcPrice = '567079.39';
-    var ethPrice = '24938.92';
 
     // hide the dropdown
     $('#dropdown-currency').attr("hidden",true);
@@ -267,7 +282,7 @@ jQuery( document ).ready(function($) {
     $('#label-currency').text(coin);
 
     // convert the value
-    convertCurrency('usd', 'btc', '#init-investment');
+    // convertCurrency('usd', 'btc', '#init-investment');
 
     // add the data attribute
     input.attr('data-currency', coin);
@@ -352,6 +367,10 @@ jQuery( document ).ready(function($) {
     $('#alert-price').val('');
     $('#alert-url').val('');
 
+
+    // set the parameter for the rest of the form
+    chrome.storage.sync.set({ alertActive: true });
+
     // if there is an alert, update the badge
     chrome.action.setBadgeText({text: 'Alert'});
     // make it red until the next time
@@ -394,12 +413,6 @@ function calculateMarketCap() {
   var mcAnswer = $('#mc-est-mc');
   // calculate the estimated marketcap
   output = targetPrice.multiply(circulating);
-  mcCount = mcAnswer.text().trim().length;
-  if (mcCount > '18') {
-    $('#mc-label').text('MCap');
-  } else {
-    $('#mc-label').text('Marketcap');
-  }
   // display the marketcap
   mcAnswer.text(numeral(output).format('$ 0,0'));
 
@@ -408,7 +421,7 @@ function calculateMarketCap() {
 // convert
 function convertCurrency(from, to, input) {
 
-  var value = $(input).val();
+  var value = $(input).val().replace(/,/g , '');
   var conversion;
 
   chrome.storage.sync.get('btcPrice', function(data) {
@@ -419,21 +432,20 @@ function convertCurrency(from, to, input) {
     var ethPrice = data.ethPrice;
   });
 
-  console.log('value: ' + value);
-  console.log('from: ' + from);
-  console.log('to: ' + to);
-  console.log('input: ' + input);
 
-  console.log(btcPrice);
-  console.log(ethPrice);
+  console.log('BTC Price: ' + btcPrice);
+  console.log('ETH Price: ' + ethPrice);
 
   // if you're going usd -> btc
   if ((from === 'usd') && (to === 'btc')) {
 
-    console.log('usd->btc');
-    console.log('btc price: ' + btcPrice);
+    console.log('going usd->btc');
+
     // calculate based on btc price
-    conversion = (value / btcPrice);
+    conversion = ( value / btcPrice );
+
+    console.log('Calulated value: ' + conversion);
+
     // format it
     output = numeral(conversion).format('0.00000000');
     // console.log(conversion);
@@ -449,7 +461,6 @@ function convertCurrency(from, to, input) {
   else if ((from === 'usd') && (to === 'eth')) {
 
     console.log('usd->eth');
-    console.log('eth price: ' + ethPrice);
     // calculate based on btc price
     conversion = (value / ethPrice);
     // format it
@@ -468,7 +479,6 @@ function convertCurrency(from, to, input) {
   else if ((from === 'btc') && (to === 'eth')) {
 
     console.log('btc->eth');
-    console.log('eth price: ' + ethPrice);
     // calculate based on btc price
     conversion = (value / ethPrice);
     // format it
@@ -491,10 +501,29 @@ function convertCurrency(from, to, input) {
   // if you're going btc -> usd
   else if ((from === 'btc') && (to === 'usd')) {
 
+    console.log('going btc->usd');
+
+    // calculate based on btc price
+    conversion = ( value * 200 );
+
+    console.log('Calulated value: ' + conversion);
+
+    // format it
+    output = numeral(conversion).format('0,0[.]00');
+    // console.log(conversion);
+    // change the value within the field
+    $(input).val(output);
+    // set the placeholders
+    $(input).attr('placeholder', '$1000.00');
+    // entry.attr('placeholder', '0.00000001');
+    // exit.attr('placeholder', '0.00000001');
+
   }
 
   // if you're going eth -> usd
   else {
+
+
 
   }
 
@@ -514,6 +543,8 @@ function calculateTrade() {
   var total = $('#tr-total');
   var profit = $('#tr-profit');
 
+  console.log('currency is: ' + currency);
+
 
   // calculate the total
   totalReturn = (initInvestment / entryPrice) * exitPrice;
@@ -524,6 +555,7 @@ function calculateTrade() {
   // var profitLoss = numeral(totalReturn - initInvestment).multiply('0.1');
   // var profitLoss = Math.floor((totalReturn / initInvestment) * 0.01)
 
+  console.log('totalProfit: ' + totalProfit);
 
   // if you're currency is btc
   if  (currency == 'btc') {
@@ -532,9 +564,6 @@ function calculateTrade() {
     output = numeral(totalReturn).format('0.00000000');
     total.text(numeral(output).format('0.00000000'));
     profit.text(numeral(totalProfit).format('0.00000000'));
-
-
-    console.log('in bitcoin');
 
   }
 
@@ -546,20 +575,15 @@ function calculateTrade() {
     total.text(numeral(output).format('0.00000000'));
     profit.text(numeral(totalProfit).format('0.00000000'));
 
-    console.log('in eth');
   }
 
   // if your currency is usd
   else {
 
-    console.log('in usd');
-
     // format the totals
-    output = numeral(totalReturn).format('0,0.00');
-    total.text(numeral(output).format('$0,0.00'));
-    profit.text(numeral(totalProfit).format('$0,0.00'));
-
-
+    output = numeral(totalReturn).format('0,0[.]00');
+    total.text(numeral(output).format('0,0[.]00'));
+    profit.text(numeral(totalProfit).format('0,0[.]00'));
 
   }
 

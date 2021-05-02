@@ -42,17 +42,35 @@ try {
 
   // when the alarm hits, then run the function
   chrome.alarms.onAlarm.addListener(alarm => {
-    getGasPrice();
-    // show the new price in the badge
-    chrome.action.setBadgeText({text: 'Alert'});
-    chrome.action.setBadgeBackgroundColor({ color: 'red' });
 
+    // let's check to see if there's been an alert
+    chrome.storage.sync.get('alertActive', function(data) {
+      // display the values in the header
+      console.log(data);
+      // if there's an active alert
+      if ( data.alertActive == 'true') {
+        // show the alert badge
+        chrome.action.setBadgeText({text: 'Alert'});
+        chrome.action.setBadgeBackgroundColor({ color: 'red' });
+        // don't update the gas price
+        return;
+      }
+      // show the updated gas price
+      getGasPrice();
+    });
   });
 
-  // get the coin list and store it in local storage
+  // let's check your alerts and see if it's time yet
+  function CheckAlertPrices() {
+
+
+
+  }
+
+  // get the coin list for the marketcaps
   function GetCoinData() {
     // the gas api
-    const apiCall = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20';
+    const apiCall = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10';
     // calling the api
     fetch(apiCall).then(function(res) {
       // wait for response
@@ -85,6 +103,7 @@ try {
         // push that prices into storage
         chrome.storage.sync.set({ btcPrice: data.bitcoin.usd });
         chrome.storage.sync.set({ ethPrice: data.ethereum.usd });
+        
       });
     }).catch(function(err) {
       console.log('api gave an error: ' + err);
@@ -96,6 +115,8 @@ try {
   GetCoinData();
   getGasPrice();
   GetAlertData();
+  // se the initial currency to used
+  chrome.storage.sync.set({ currency: 'usd' });
 
 }
 catch(e) {
