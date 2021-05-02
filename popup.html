@@ -15,7 +15,7 @@
 
     <header class="header-main">
 
-      <a id="logo" href="#">
+      <a id="logo" href="#" tabindex="-1">
         <img src="src/img/128.png" alt="" />
       </a>
 
@@ -52,7 +52,7 @@
 
       <!-- the trade calculator -->
       <div id="tab-1" class="tab-container tab-calculator is-visible">
-
+        <div class="trade-calculator">
         <div class="fieldset field-investment">
           <fieldset>
             <label class="input-label label-prefix">Investment</label>
@@ -69,16 +69,17 @@
         </div> <!-- end investment field -->
 
         <div class="fieldset-flex">
-          <fieldset class="fieldset-first">
+          <fieldset class="fieldset-first fieldset-last">
             <label class="input-label label-prefix">Entry</label>
             <input class="input input-trade-live input-prefix" type="text" name="entryPrice" id="entry-price" autocomplete="off" placeholder="$1.00" value="" data-value="" tabindex="2" />
           </fieldset>
 
-          <fieldset class="fieldset">
+          <fieldset class="fieldset-last">
             <label class="input-label label-prefix">Exit</label>
             <input class="input input-trade-live input-prefix" type="text" id="exit-price" name="exitPrice" autocomplete="off" placeholder="$1.50" value="" data-value="" tabindex="3" />
           </fieldset>
         </div>
+      </div>
 
         <div class="fieldset fieldset-answer">
           <div class="answer-container">
@@ -94,6 +95,7 @@
       <!-- marketcap calculator -->
       <div id="tab-2" class="tab-container tab-marketcap">
 
+        <div class="mc-calculator">
         <div class="fieldset field-investment">
           <fieldset>
             <label class="input-label label-prefix">Circulating Supply</label>
@@ -102,20 +104,23 @@
         </div>
 
         <div class="fieldset field-investment">
-          <fieldset>
+          <fieldset class="fieldset-last">
             <label class="input-label label-prefix">Price</label>
             <input class="input input-mc-live input-prefix-suffix" type="text" id="mc-target" name="mc-target" autocomplete="off" placeholder="$1.50" value="397.51"/>
             <label class="input-label label-suffix">USD</label>
           </fieldset>
         </div>
+        </div>
 
         <div class="fieldset fieldset-answer">
           <div class="answer-container answer-mc">
-            <p class="p-subline"><span id="mc-label" class="label-floating">Marketcap</span><span id="mc-est-mc" class="tabular strong">$3,568,574,611</span></p>
-            <p class="p-subline"><span class="label-floating">BTC Marketcap</span> <span id="mc-btc-mc" class="tabular"></span></p>
-            <p class="p-subline"><span class="label-floating">ETH Marketcap</span><span id="mc-eth-mc" class="tabular"></span></p>
+            <p class="p-subline"><span id="mc-label" class="label-floating">Est. Marketcap</span><span id="mc-est-mc" class="tabular strong">$3,568,574,611</span></p>
+            <h3>Top 20 Coins by Marketcap</h3>
+            <div id="mc-list"></div>
+            <a class="btn btn-full btn-secondary" href="https://coingecko.com">View all</a>
           </div>
         </div>
+
 
       </div> <!-- end tab 2 -->
 
@@ -124,33 +129,29 @@
 
         <fieldset class="fieldset-full">
           <label class="input-label label-prefix">Coin</label>
-          <input id="select-coin" type="text" class="select select-full input-prefix-suffix dropdown-trigger" data-dropdown="dropdown-coinlist" name="alertCoin" value="BTC" data-name="" />
+          <input id="select-coin" type="text" class="input input-prefix-suffix" name="alertCoin" value="" data-name="" placeholder="BTC"/>
           <label class="input-label label-suffix">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M3.68341 6.82009C3.41202 6.49443 3.6436 6 4.06752 6H11.9325C12.3564 6 12.588 6.49443 12.3166 6.82009L8.38411 11.5391C8.18421 11.7789 7.81579 11.7789 7.61589 11.5391L3.68341 6.82009Z" fill="black" fill-opacity="0.6"/>
             </svg>
           </label>
-          <div id="dropdown-coinlist" class="scrollable-dropdown-container" hidden>
-            <ul class="dropdown dropdown-results">
-            </ul>
-          </div>
         </fieldset>
 
-        <div class="fieldset-flex">
+        <div class="alert-fetch-input fieldset-flex" hidden>
           <fieldset>
           <label class="input-label label-prefix">Target Price</label>
           <input id="alert-price" class="input input-target-live input-prefix-suffix" type="text" name="alertPrice" autocomplete="off" placeholder="1.93" value="" />
           <label class="input-label label-suffix">USD</label>
         </fieldset>
       </div>
-      <div class="flex">
+      <div class="alert-fetch-input flex" hidden>
         <fieldset>
           <label class="input-label label-prefix">Alert URL</label>
           <input id="alert-url" class="input input-url input-prefix" type="text" name="alertURL" autocomplete="off" placeholder="https://app.uniswap.org" value="" />
         </fieldset>
       </div>
 
-      <button class="btn" id="btn-create-alert">Create Alert</button>
+      <button class="btn btn-full" id="btn-create-alert" hidden>Create Alert</button>
 
 
       <div class="alerts-set">
@@ -199,7 +200,7 @@
   <div class="panel panel-donate">
 
     <header class="header-donate">
-      <a id="logo" class="btn-go-main" href="#">
+      <a id="logo" class="btn-go-main" href="#" tabindex="-1">
         <img src="src/img/128.png" alt="" />
       </a>
     </header>
@@ -225,8 +226,8 @@
 
     </main>
 
-    <p class="copyright">Brought to you by <a href="https://rainbowsprinkles.com">Rainbow Sprinkles</a></p>
-    <p class="copyright">Illustrations by <a href="#">Chavez Design</a></p>
+    <p class="copyright">Brought to you by <a href="https://rainbowsprinkles.com" tabindex="-1">Rainbow Sprinkles</a></p>
+    <p class="copyright">Illustrations by <a href="#" tabindex="-1">Chavez Design</a></p>
 
 
 

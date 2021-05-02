@@ -7,9 +7,6 @@ These can't reference the dom at all and only exist to support the extension in 
 // catch errors
 try {
 
-  // setting the variable to collect coin data
-  var coinData = [];
-
   // the hunt for gas prices
   function getGasPrice() {
     // the gas api
@@ -55,7 +52,7 @@ try {
   // get the coin list and store it in local storage
   function GetCoinData() {
     // the gas api
-    const apiCall = 'https://api.coingecko.com/api/v3/coins/list?include_platform=false';
+    const apiCall = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20';
     // calling the api
     fetch(apiCall).then(function(res) {
       // wait for response
@@ -64,20 +61,18 @@ try {
         return;
       }
       res.json().then(function(data) {
-        // push it to the variable
-        coinData.push(data);
-        // push that variable into the local storage
-        chrome.storage.local.set({ coinData });
+        // console.log('Background API Call: ' + coinData);
+        chrome.storage.local.set({ coins: data });
       });
     }).catch(function(err) {
       console.log('api gave an error: ' + err);
     });
   }
 
-  // get the coin list and store it in local storage
-  function GetCurrencyData() {
+  // get the coin list of all alerts (btc & eth are defaults)
+  function GetAlertData() {
     // the gas api
-    const apiCall = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum&vs_currencies=usd&include_market_cap=true';
+    const apiCall = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum&vs_currencies=usd&include_market_cap=false';
     // calling the api
     fetch(apiCall).then(function(res) {
       // wait for response
@@ -86,17 +81,10 @@ try {
         return;
       }
       res.json().then(function(data) {
-
         // console.log(data);
-
         // push that prices into storage
         chrome.storage.sync.set({ btcPrice: data.bitcoin.usd });
         chrome.storage.sync.set({ ethPrice: data.ethereum.usd });
-        chrome.storage.sync.set({ btcMarketCap: data.bitcoin.usd_market_cap });
-        chrome.storage.sync.set({ ethMarketCap: data.ethereum.usd_market_cap });
-
-
-
       });
     }).catch(function(err) {
       console.log('api gave an error: ' + err);
@@ -107,7 +95,7 @@ try {
   // initial calls when you start the extension
   GetCoinData();
   getGasPrice();
-  GetCurrencyData();
+  GetAlertData();
 
 }
 catch(e) {

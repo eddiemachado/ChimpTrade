@@ -35,7 +35,7 @@ textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;paddin
 ::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}
 details{display:block}
 summary{display:list-item}
-template{display:none}[hidden]{display:none}
+template{display:none}[hidden]{display:none !important}
 html {box-sizing: border-box;}
 *, *:before, *:after {box-sizing: inherit;}
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0}
@@ -101,6 +101,11 @@ Theme Agnostic Variables
 
   --col_brown_9: rgb(28,17,13);
 
+  --col_purple_1: #7F61AE;
+
+
+  --col_focus: #607AA9;
+
 
   --col_green_05: #5AAE8C;
   --col_green_09: #1F7F58;
@@ -149,7 +154,7 @@ body[data-theme='light'] {
   --col_neutral_1: #F0F0F5;
 
   /* forms */
-  --col_input_bg: #F0F0F5;
+  --col_input_bg: #fff;
   --col_input_border: #F0F0F5;
 
   --col__dropdown_bg: #FFF;
@@ -584,6 +589,10 @@ fieldset {
   position: relative;
 }
 
+.fieldset-last {
+  margin-bottom: 0;
+}
+
 .fieldset-flex {
   display: flex;
 }
@@ -691,7 +700,7 @@ Form Components
 .select:-webkit-autofill:hover,
 .select:-webkit-autofill:focus {
   outline: 0;
-  border-color: var(--col_cta);
+  border-color: var(--col_focus);
 }
 
 .input.is-invalid {
@@ -766,7 +775,7 @@ Buttons
   height: 48px;
   padding: 0 16px;
   background: var(--col_cta);
-  border: 0;
+  border: 2px solid transparent;
   outline: 0;
   border-radius: 8px;
   transition: all 120ms ease;
@@ -788,6 +797,8 @@ Buttons
 
 .btn:focus {
   outline: none;
+  background: var(--col_cta_hover);
+  box-shadow: 0 0 0 2px var(--col_focus);
 }
 
 .btn-icon {
@@ -804,8 +815,10 @@ Buttons
 
 
 
-#btn-create-alert {
+.btn-full {
+  display: block;
   width: 100%;
+  text-align: center;
   margin-top: 8px;
 }
 
@@ -851,6 +864,11 @@ Dropdowns
 Trading tab
 ***/
 
+.trade-calculator {
+  background: #FFE292;
+  padding: 8px;
+  border-radius: 8px;
+}
 
 #tr-total {
   font-weight: 900;
@@ -860,6 +878,11 @@ Trading tab
 Market Cap tab
 ***/
 
+.mc-calculator {
+  background: #FFBB98;
+  padding: 8px;
+  border-radius: 8px;
+}
 
 #tab-2 .answer-container .label-floating {
   margin-right: 12px;
@@ -876,6 +899,65 @@ Market Cap tab
 
 #mc-est-mc {
   font-weight: 900;
+}
+
+
+#mc-list {
+
+}
+
+.mc-item {
+  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mc-item:nth-of-type(even) {
+  border-top: 1px solid var(--col_neutral_1);
+  border-bottom: 1px solid var(--col_neutral_1);
+}
+
+.mc-item:last-of-type {
+  border-bottom: 0;
+}
+
+.mc-left {
+  display: flex;
+}
+
+.mc-right {
+  text-align: right;
+}
+
+
+.mc-coin-name {
+}
+
+.mc-image {
+  width: 24px;
+  height: 24px;
+  border-radius: 24px;
+  background: var(--col_white);
+  margin: 8px 8px 0 0;
+}
+
+.mc-item-name {
+  display: block;
+  font-size: var(--font_12);
+  font-weight: 700;
+  color: var(--text_light);
+  line-height: 26px;
+}
+
+.mc-item-mc {
+  line-height: 24px;
+}
+
+.mc-item-small {
+  display: block;
+  font-size: var(--font_12);
+  color: var(--text_light);
+  line-height: 20px;
 }
 
 

@@ -40,7 +40,7 @@ chrome.storage.sync.get('marketcapHelp', function(data) {
   // if they haven't removed it, then let's show it
   if (data.marketcapHelp !== 'false') {
     // insert the help message
-    $('#tab-2').prepend('<div id="help-marketcap" class="help onboarding"><button class="close" data-close="help-marketcap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.295 7.705C15.9056 7.31564 15.2744 7.31564 14.885 7.705L12 10.59L9.115 7.705C8.72564 7.31564 8.09436 7.31564 7.705 7.705V7.705C7.31564 8.09436 7.31564 8.72564 7.705 9.115L10.59 12L7.705 14.885C7.31564 15.2744 7.31564 15.9056 7.705 16.295V16.295C8.09436 16.6844 8.72564 16.6844 9.115 16.295L12 13.41L14.885 16.295C15.2744 16.6844 15.9056 16.6844 16.295 16.295V16.295C16.6844 15.9056 16.6844 15.2744 16.295 14.885L13.41 12L16.295 9.115C16.6844 8.72564 16.6844 8.09436 16.295 7.705V7.705Z" fill="black" fill-opacity="0.4"/></svg></button><p>Calculate the potential marketcap of a coin. <a href="https://www.youtube.com/watch?v=ziQwtcNUIaU">Why this matters</a></p></div>');
+    $('#tab-2').prepend('<div id="help-marketcap" class="help onboarding"><button class="close" data-close="help-marketcap"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.295 7.705C15.9056 7.31564 15.2744 7.31564 14.885 7.705L12 10.59L9.115 7.705C8.72564 7.31564 8.09436 7.31564 7.705 7.705V7.705C7.31564 8.09436 7.31564 8.72564 7.705 9.115L10.59 12L7.705 14.885C7.31564 15.2744 7.31564 15.9056 7.705 16.295V16.295C8.09436 16.6844 8.72564 16.6844 9.115 16.295L12 13.41L14.885 16.295C15.2744 16.6844 15.9056 16.6844 16.295 16.295V16.295C16.6844 15.9056 16.6844 15.2744 16.295 14.885L13.41 12L16.295 9.115C16.6844 8.72564 16.6844 8.09436 16.295 7.705V7.705Z" fill="black" fill-opacity="0.4"/></svg></button><p>Calculate the potential marketcap of a coin. <a href="https://www.youtube.com/watch?v=ziQwtcNUIaU" tabindex="-1">Why this matters</a></p></div>');
   }
 });
 
@@ -71,49 +71,34 @@ function updatePrices() {
     document.getElementById('gas-fast').innerHTML = data.fast;
   });
   chrome.storage.sync.get('btcPrice', function(data) {
+    // log the price for conversion
     btcPrice = data.btcPrice;
-    document.getElementById('mc-btc-mc').innerHTML = data.btcMarketCap;
-    console.log(data.btcPrice + ' ' + data.btcMarketCap);
   });
   chrome.storage.sync.get('ethPrice', function(data) {
+    // log the price for conversion
     ethPrice = data.ethPrice;
-    document.getElementById('mc-eth-mc').innerHTML = data.ethMarketCap;
   });
-  chrome.storage.sync.get('btcMarketCap', function(data) {
-    document.getElementById('mc-btc-mc').innerHTML = (numeral(data.btcMarketCap).format('$0,0'));
-  });
-  chrome.storage.sync.get('ethMarketCap', function(data) {
-    document.getElementById('mc-eth-mc').innerHTML = (numeral(data.ethMarketCap).format('$0,0'));
-  });
+
 }
 
 
-
-
-
-// check if help has been dismissed
-chrome.storage.local.get('coinData', function(data) {
-
-  // console.log('base.js: ' + data.length);
-
-  var maxCoins = 500;
-
-  // console.log('outside ' + data[2].id)
-
-  var coinJSON = JSON.stringify(data);
-  var coinData = coinJSON.slice(0, maxCoins);
-
-  // console.log(coinData.length);
-
-  // for each one
-  for (var i = 0; i < coinData.length; i++) {
-    var obj = coinData[i];
-
-    // console.log('Symbol: ' + obj[i].symbol);
-
-  } // for each one
-
-}); // end get storage
+// pull the coin info for the top 20 in marketcap
+function PopulateMarketCap() {
+  // check if help has been dismissed
+  chrome.storage.local.get({ coins: []}, function(data) {
+    // make it easier to read
+    var coinData = JSON.stringify(data);
+    //console.log('Get from storage: ' + coinData)
+    // for each one
+    for (var i = 0; i < data.coins.length; i++) {
+      var obj = data.coins[i];
+      // build the list
+      var item = '<div class="mc-item"><div class="mc-left"><img class="mc-image" src="' + obj.image + '" alt="' + obj.name + '" /><div class="mc-coin-name"><a href="https://www.coingecko.com/en/coins/' + obj.id + '" class="mc-item-name" target="_blank">' + obj.name + '</a><span class="mc-item-small tabular">' + numeral(obj.current_price).format('$0,0[.]00') + '</span></div></div> <div class="mc-right"><span class="mc-item-mc tabular">' + numeral(obj.market_cap).format('$0,0[.]00') + '</span><span class="mc-item-small tabular">Circ. Supply: ' + numeral(obj.circulating_supply).format('0,0') + '</span></div></div>';
+      // append it to the container
+      $('#mc-list').append(item);
+    } // for each one
+  }); // end get storage
+}
 
 
 
@@ -123,15 +108,13 @@ chrome.storage.local.get('coinData', function(data) {
 
 
 
-
-
-// initial price update when you open the popup
+// initial price update & marketcap list when you open the popup
 updatePrices();
+PopulateMarketCap();
 
 
 // functional javascript stuff
 jQuery( document ).ready(function($) {
-
 
   // panels
   var panel1 = $('.panel-main');
@@ -143,25 +126,16 @@ jQuery( document ).ready(function($) {
     $('body').addClass('show-donate');
     return false;
   });
-
   // go back to the main page
   $(document).on('click', '.btn-go-main', function() {
     $('body').removeClass('show-donate');
     return false;
   });
-
-  // show the main panel
-  $(document).on('click', '.btn-back', function() {
-    $('body').removeClass('show-settings');
-    return false;
-  });
-
   // copy to clipboard
   $(document).on('click', '.btn-copy', function() {
     copyHash();
     return false;
   });
-
   // change tabs
   $(document).on('click', '.tab', function() {
     // get the proper tab
@@ -177,10 +151,6 @@ jQuery( document ).ready(function($) {
     return false;
   });
 
-
-
-
-
   //
   // keyups and typing functions
   //
@@ -190,15 +160,15 @@ jQuery( document ).ready(function($) {
     // run the calculation
     calculateTrade();
   });
-
   // calculating the marketcap
   $(document).on('keyup', '.input-mc-live', function() {
     // run the calculation
     calculateMarketCap();
   });
 
-
-
+  //
+  // calculations
+  //
 
   // calculating the marketcap
   $("#select-coin").keyup(delay(function (e) {
@@ -308,26 +278,6 @@ jQuery( document ).ready(function($) {
 
 
 
-  // when clicking an element within a dropdown list
-  $(document).on('click', '.list-coin', function() {
-
-    var coin = $(this).data('coin').toUpperCase();
-    var price = $(this).data('price');
-    var img = $(this).data('image');
-
-    // hide the dropdown
-    $('#dropdown-coinlist').attr("hidden",true);
-
-    // update the input
-    $('#select-coin').val(coin);
-    // set the data attribute that will show up in the alert
-    $('#select-coin').data('name', coin);
-    // set the data attribute on the select
-    $('#alert-price').val(price);
-
-    return false;
-  });
-
   /***
   Onboarding & Help alerts
   ***/
@@ -339,7 +289,6 @@ jQuery( document ).ready(function($) {
     // set that it's been removed
     chrome.storage.sync.set({ tradingHelp: 'false' });
   });
-
   // closing the marketcap help
   $(document).on( 'click', '.close[data-close="help-marketcap"]', function() {
     // remove it
@@ -347,7 +296,6 @@ jQuery( document ).ready(function($) {
     // set that it's been removed
     chrome.storage.sync.set({ marketcapHelp: 'false' });
   });
-
   // closing the set price alert help
   $(document).on( 'click', '.close[data-close="help-pricealert"]', function() {
     // remove it
@@ -359,10 +307,8 @@ jQuery( document ).ready(function($) {
 
   // theme selector
   $(document).on( 'click', '.btn-theme', function() {
-
     var theme = $('body').data('theme');
     var btn = $(this).data('theme');
-
     // if you click on the light theme
     if (btn == 'light') {
       // set the theme
@@ -381,6 +327,7 @@ jQuery( document ).ready(function($) {
     }
     return false;
   });
+
 
   // create an alert
   $(document).on('click', '#btn-create-alert', function() {
