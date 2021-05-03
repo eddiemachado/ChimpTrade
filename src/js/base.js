@@ -371,11 +371,6 @@ jQuery( document ).ready(function($) {
     // set the parameter for the rest of the form
     chrome.storage.sync.set({ alertActive: true });
 
-    // if there is an alert, update the badge
-    chrome.action.setBadgeText({text: 'Alert'});
-    // make it red until the next time
-    chrome.action.setBadgeBackgroundColor({ color: 'red' });
-
     return false;
   });
 
@@ -625,19 +620,44 @@ function copyHash() {
   document.execCommand("copy");
 }
 
+// send it to chrome
+chrome.notifications.create({
+    // function when the alert is created
+    type: 'basic',
+    iconUrl: 'src/img/32.png',
+    title: coin + ' Price Alert',
+    message: coin + ' has hit the target price of ' + price
+  });
+
 
 
 function createAlert(coin, price, url) {
-  // send it to chrome
-  chrome.notifications.create({
-      // function when the alert is created
-      type: 'basic',
-      iconUrl: 'src/img/32.png',
-      title: coin + ' Price Alert',
-      message: coin + ' has hit the target price of ' + price
-    }
-  )
 
+
+  // by passing an object you can define default values e.g.: []
+  chrome.storage.local.get({ alerts: [] }, function (data) {
+    // the input argument is ALWAYS an object containing the queried keys
+    // so we select the key we need
+    var alerts = data.alerts;
+
+    alerts.push({ alerts: 'alerts', HasBeenUploadedYet: false });
+
+    // set the new array value to the same key
+    chrome.storage.local.set({ alerts: alert }, function () {
+        // you can use strings instead of objects
+        // if you don't  want to define default values
+        chrome.storage.local.get('alerts', function (data) {
+
+            console.log(data.alerts);
+
+        });
+    });
+
+  });
+
+
+
+  // add the alerts to the list
   $('#alerts').prepend('<li id="alert-01" class="alert-item"><div class="alert-content"><p class="alert-coin">' + coin + '</p><p class="alert-price">Target: <span class="alert-target">' + price + '</span></p></div><button class="alert-remove">Remove</button></li>');
 
 }

@@ -62,7 +62,13 @@ try {
 
   // let's check your alerts and see if it's time yet
   function CheckAlertPrices() {
+    // get the prices we have in storage
 
+    // check them against the price you set in alert
+
+    // if it matches then launch the alert 
+
+    // if it hasn't then just do nothing & reset the alert thing in the badge
 
 
   }
@@ -103,7 +109,7 @@ try {
         // push that prices into storage
         chrome.storage.sync.set({ btcPrice: data.bitcoin.usd });
         chrome.storage.sync.set({ ethPrice: data.ethereum.usd });
-        
+
       });
     }).catch(function(err) {
       console.log('api gave an error: ' + err);

@@ -470,7 +470,6 @@ header {
   font-size: var(--font_12);
   font-weight: 700;
   color: var(--text_light);
-
 }
 
 #tr-percentage, #tr-profit, #tr-total {
@@ -647,6 +646,8 @@ label {
   text-transform: uppercase;
 }
 
+
+
 #label-currency {
   height: 48px;
   top: 0;
@@ -741,7 +742,7 @@ Form Components
 
 .input-url {
   font-family: var(--font_poppins);
-  font-size: var(--font_14);
+  font-size: var(--font_12);
 }
 
 .input + .input {
