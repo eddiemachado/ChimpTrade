@@ -1202,14 +1202,31 @@ Sliding stylesheet
   content: '';
 }
 
-.alert {
-  background: var(--col_bg);
+.alert-item {
+  position: relative;
   width: 100%;
-  padding: 16px;
+  padding: 8px;
+  margin: 0 0 8px 0;
+  font-size: var(--font_14);
+  border: 1px solid var(--col_neutral_1);
   border-radius: 4px;
-  box-shadow: var(--layer_1);
 }
 
-.alert:hover {
-  box-shadow: var(--layer_2);
+.alert-item:hover {
+}
+
+.alert-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0.6;
+}
+
+.alert-coin {
+  font-weight: 700;
+}
+
+.alert-price {
+  font-size: var(--font_12);
+  color: var(--text_light);
 }

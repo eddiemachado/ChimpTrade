@@ -5,6 +5,7 @@ Base Functions
 // variables
 var btcPrice;
 var ethPrice;
+var alertCoins = [];
 
 
 // first get the color scheme if they've chosen one
@@ -24,7 +25,6 @@ chrome.storage.sync.get('theme', function(data) {
   }
 });
 
-
 // check if help has been dismissed
 chrome.storage.sync.get('tradingHelp', function(data) {
   // if they haven't removed it, then let's show it
@@ -33,7 +33,6 @@ chrome.storage.sync.get('tradingHelp', function(data) {
     $('#tab-1').prepend('<div id="help-trading"class="help onboarding"><button class="close" data-close="help-trading"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.295 7.705C15.9056 7.31564 15.2744 7.31564 14.885 7.705L12 10.59L9.115 7.705C8.72564 7.31564 8.09436 7.31564 7.705 7.705V7.705C7.31564 8.09436 7.31564 8.72564 7.705 9.115L10.59 12L7.705 14.885C7.31564 15.2744 7.31564 15.9056 7.705 16.295V16.295C8.09436 16.6844 8.72564 16.6844 9.115 16.295L12 13.41L14.885 16.295C15.2744 16.6844 15.9056 16.6844 16.295 16.295V16.295C16.6844 15.9056 16.6844 15.2744 16.295 14.885L13.41 12L16.295 9.115C16.6844 8.72564 16.6844 8.09436 16.295 7.705V7.705Z" fill="black" fill-opacity="0.4"/></svg></button><p>Use this to calculate a potential trade.<br /><strong>Investment:</strong> is how much you put in<br /><strong>Entry:</strong> is the price you\'re buying at<br /><strong>Exit:</strong> is your sell target</p></div>');
   }
 });
-
 
 // check if help has been dismissed
 chrome.storage.sync.get('marketcapHelp', function(data) {
@@ -53,22 +52,61 @@ chrome.storage.sync.get('alertHelp', function(data) {
   }
 });
 
-// check if we have any alerts
-chrome.storage.sync.get('alerts', function(data) {
-  // if they haven't removed it, then let's show it
-  console.log(data);
-
-  for (var i = 0; i < data.length; i++) {
-    var obj = data[i];
+// check if we have any alerts & build the list
+chrome.storage.local.get('alerts', function(data) {
+  for (var i = 0; i < data.alerts.length; i++) {
+    var obj = data.alerts[i];
     // add the alerts to the list
-    $('#alerts').prepend('<li id="alert-01" class="alert-item"><div class="alert-content"><p class="alert-coin">' + obj.coin + '</p><p class="alert-price">Target: <span class="alert-target">' + obj.price + '</span></p></div><button class="alert-remove">Remove</button></li>');
+    $('#alerts').prepend('<li id="alert-' + i + '" class="alert-item"><div class="alert-content"><p class="alert-coin">' + obj.alertCoin + '</p><p class="alert-price">Target: <span class="alert-target">' + obj.alertPriceTarget + '</span></p></div><button class="alert-remove">x</button></li>');
   } // for each one
-
 });
 
 
-// getting the alert info and displying it
-function GetAlerts() {
+// getting the alert prices so we can keep tabs on prices
+function GetAlertPrices() {
+  // get the alerts and the api call
+  chrome.storage.local.get('alerts', function(data) {
+    for (var i = 0; i < data.alerts.length; i++) {
+      var obj = data.alerts[i];
+      // get the coin names so we can get the prices
+      alertCoins.push(obj.alertCoin);
+    }
+    // try to append that to an API call
+    var alertPriceAPI = 'https://api.coingecko.com/api/v3/simple/price?ids=' + alertCoins.toString() + '&vs_currencies=usd&include_market_cap=false';
+
+    // calling the api based on the set alerts
+    fetch(alertPriceAPI).then(function(res) {
+        // wait for response
+        if (res.status !== 200) {
+          console.log('api refused the connection');
+          return;
+        }
+        res.json().then(function(data) {
+
+
+            // the data we get back
+            console.log(data);
+
+            // this is the way the data comes back from the API
+            // data.solana.usd
+
+            // this is what i need since i don't want it hardcoded
+            // data.(variable).usd
+            // for example, it may be data.bitcoin.usd or data.cardano.usd
+            // so how do i use the *search* variable?
+
+
+
+
+        });
+      }).catch(function(err) {
+        console.log('api gave an error: ' + err);
+      });
+
+
+
+
+  }); // end get the local storage
 
 }
 
@@ -97,7 +135,6 @@ function updatePrices() {
 
 }
 
-
 // pull the coin info for the top 20 in marketcap
 function PopulateMarketCap() {
   // check if help has been dismissed
@@ -116,11 +153,6 @@ function PopulateMarketCap() {
   }); // end get storage
 }
 
-
-// createAlert('BTC', '$29,039.00');
-//chrome.notifications.onClicked.addListener(onClickNotification('https://google.com'));
-
-
 // initial price update & marketcap list when you open the popup
 updatePrices();
 PopulateMarketCap();
@@ -131,7 +163,6 @@ jQuery( document ).ready(function($) {
 
   // panels
   var panel1 = $('.panel-main');
-
 
   // go back to the main page
   $(document).on('click', '.btn-go-main', function() {
@@ -193,13 +224,11 @@ jQuery( document ).ready(function($) {
   // calculations
   //
 
-  // calculating the marketcap
+  // getting the coin data from the API
   $(document).on('keyup', '#select-coin', delay(function(e) {
 
     var search = this.value;
     var priceAPI = 'https://api.coingecko.com/api/v3/simple/price?ids=' + search + '&vs_currencies=usd&include_market_cap=false';
-
-    // console.log(priceAPI);
 
     // calling the api
     fetch(priceAPI).then(function(res) {
@@ -419,7 +448,6 @@ function delay(callback, ms) {
   };
 }
 
-
 // calculate a coins marketcap
 function calculateMarketCap() {
   // get input values
@@ -547,7 +575,6 @@ function convertCurrency(from, to, input) {
 
 }
 
-
 // calculate a trade
 function calculateTrade() {
   // get the values
@@ -634,7 +661,6 @@ function calculateTrade() {
 
 }
 
-
 // copy to clipboard
 function copyHash() {
   // get the value
@@ -646,20 +672,10 @@ function copyHash() {
   document.execCommand("copy");
 }
 
-// send it to chrome
-chrome.notifications.create({
-    // function when the alert is created
-    type: 'basic',
-    iconUrl: 'src/img/32.png',
-    title: 'coin' + ' Price Alert',
-    message: 'coin' + ' has hit the target price of ' + 'price'
-  });
 
 
-
+// when you click the create alert button
 function CreateAlert(coin, price, url) {
-
-
   // by passing an object you can define default values e.g.: []
   chrome.storage.local.get({ alerts: [] }, function (data) {
     // the input argument is ALWAYS an object containing the queried keys
@@ -669,23 +685,24 @@ function CreateAlert(coin, price, url) {
     alerts.push({ alertCoin: coin, alertPriceTarget: price, alertURL: url });
 
     // set the new array value to the same key
-    chrome.storage.local.set({ alerts }, function () {
-        // you can use strings instead of objects
-        // if you don't  want to define default values
-        chrome.storage.local.get('alerts', function (data) {
-
-            console.log(data.alerts);
-
-        });
+    chrome.storage.local.set({ alerts: alerts }, function () {
+        // add the alerts to the list
+        $('#alerts').prepend('<li id="alert-01" class="alert-item"><div class="alert-content"><p class="alert-coin">' + coin + '</p><p class="alert-price">Target: <span class="alert-target">' + price + '</span></p></div><button class="alert-remove">Remove</button></li>');
     });
-
   });
+}
 
-
-
-  // add the alerts to the list
-  $('#alerts').prepend('<li id="alert-01" class="alert-item"><div class="alert-content"><p class="alert-coin">' + coin + '</p><p class="alert-price">Target: <span class="alert-target">' + price + '</span></p></div><button class="alert-remove">Remove</button></li>');
-
+function ShowAlert(coin, price, url) {
+  // send it to chrome
+  chrome.notifications.create({
+      // function when the alert is created
+      type: 'basic',
+      iconUrl: 'src/img/32.png',
+      title: coin + ' Price Alert',
+      message: coin + ' has hit the target price of ' + price
+  });
+  // make it clickable
+  chrome.notifications.onClicked.addListener(onClickNotification(url));
 }
 
 
