@@ -908,11 +908,12 @@ Dropdowns
   z-index: 999;
   background: var(--col__dropdown_bg);
   border-radius: 8px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--layer_2);
 }
 
 .dropdown {
-  padding: 0;
+  padding: 4px 0;
+  margin: 0;
   list-style: none;
   width: 100%;
 }

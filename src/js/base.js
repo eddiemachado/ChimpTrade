@@ -6,6 +6,7 @@ Base Functions
 var btcPrice;
 var ethPrice;
 var alertCoins = [];
+var currency;
 
 
 // first get the color scheme if they've chosen one
@@ -22,6 +23,37 @@ chrome.storage.sync.get('theme', function(data) {
     darkToggle.classList.remove('active');
     lightToggle.classList.add('active');
     document.body.setAttribute('data-theme', 'light');
+  }
+});
+
+// get your preferred currency
+chrome.storage.local.get('currency', function(data) {
+  // display the values in the header
+  console.log('currenty currency: ' + data.currency);
+  var entry = $('#entry-price');
+  var exit = $('#exit-price');
+  var input = $('#init-investment');
+  // populate the label
+  $('#label-currency').text(data.currency);
+  // set it on the form
+  switch (data.currency) {
+    case 'btc':
+      // change the placeholders
+      $(input).attr('placeholder', '0.00000001');
+      $(entry).attr('placeholder', '0.00001');
+      $(exit).attr('placeholder', '0.00001');
+      break;
+    case 'eth':
+      // change the placeholders
+      $(input).attr('placeholder', '0.00000001');
+      $(entry).attr('placeholder', '0.00001');
+      $(exit).attr('placeholder', '0.00001');
+      break;
+    default:
+      // change the placeholders
+      $(input).attr('placeholder', '1000.00');
+      $(entry).attr('placeholder', '1.00');
+      $(exit).attr('placeholder', '2.00');
   }
 });
 
@@ -161,9 +193,6 @@ PopulateMarketCap();
 // functional javascript stuff
 jQuery( document ).ready(function($) {
 
-  // panels
-  var panel1 = $('.panel-main');
-
   // go back to the main page
   $(document).on('click', '.btn-go-main', function() {
     $('body').removeClass('show-donate');
@@ -275,34 +304,51 @@ jQuery( document ).ready(function($) {
 
   // when i exit the field, then format it properly
   $(document).on('focusout', '.input-mc-live, .input-target-live', function() {
+
     // get the value of what the user is typing
     var value = $(this).val();
     // format the value
     var formatted = numeral(value).format('0,0[.]00');
     // display the value formatted
     $(this).val(formatted);
+
+
   });
 
   // when i exit the field, then format it properly
   $(document).on('focusout', '.input-trade-live', function() {
+
     // get the value of what the user is typing
     var value = $(this).val();
     var formatted;
-    var currency = $('#init-investment').data('currency');
+    var currency = $('#label-currency').text();
 
-    // only do this if you're calculating in usd
-    if (currency == 'usd') {
-      // format the value
-      formatted = numeral(value).format('0,0[.]00');
-    }
-    // or it's eth or btc
-    else {
-      // format the value
-      formatted = numeral(value).format('0.00000000');
-    }
+    console.log(currency);
 
-    // display the value formatted
-    $(this).val(formatted);
+
+    if( value.length ) {
+
+      console.log('has a value');
+        // format the content
+        if (currency == 'usd') {
+          // format the value
+          formatted = numeral(value).format('0,0[.]00');
+        }
+        // or it's eth or btc
+        else {
+          // format the value
+          formatted = numeral(value).format('0.00000000');
+        }
+      }
+      // if it's still empty
+      else {
+        console.log('the input is empty');
+      }
+
+      // display the value formatted
+      $(this).val(formatted);
+
+
   });
 
   // display the coin select drop down
@@ -324,24 +370,33 @@ jQuery( document ).ready(function($) {
 
     // hide the dropdown
     $('#dropdown-currency').attr("hidden",true);
-    // set the parameter for the rest of the form
-    chrome.storage.sync.set({ currency: coin });
-
-    chrome.storage.sync.get('currency', function(data) {
-      // display the values in the header
-      console.log('currency' + data);
-    });
+    // save your settings
+    chrome.storage.local.set({ currency: coin });
+    // set it on the form
+    switch (coin) {
+      case 'btc':
+        // change the placeholders
+        $(input).attr('placeholder', '0.00000001');
+        $(entry).attr('placeholder', '0.000001');
+        $(exit).attr('placeholder', '0.000001');
+        break;
+      case 'eth':
+        // change the placeholders
+        $(input).attr('placeholder', '0.00000001');
+        $(entry).attr('placeholder', '0.000001');
+        $(exit).attr('placeholder', '0.000001');
+        break;
+      default:
+        // change the placeholders
+        $(input).attr('placeholder', '1000.00');
+        $(entry).attr('placeholder', '1.00');
+        $(exit).attr('placeholder', '2.00');
+    }
 
     // populate the label
     $('#label-currency').text(coin);
-
-    // convert the value
-    // convertCurrency('usd', 'btc', '#init-investment');
-
     // add the data attribute
     input.attr('data-currency', coin);
-
-
     return false;
   });
 
@@ -466,6 +521,7 @@ function calculateMarketCap() {
 function convertCurrency(from, to, input) {
 
   var value = $(input).val().replace(/,/g , '');
+  var usd = $('init-investment').data('usd');
   var conversion;
 
   chrome.storage.sync.get('btcPrice', function(data) {
@@ -495,10 +551,6 @@ function convertCurrency(from, to, input) {
     // console.log(conversion);
     // change the value within the field
     $(input).val(output);
-    // set the placeholders
-    $(input).attr('placeholder', '0.00000001');
-    // entry.attr('placeholder', '0.00000001');
-    // exit.attr('placeholder', '0.00000001');
   }
 
   // if you're going usd -> eth
@@ -512,10 +564,6 @@ function convertCurrency(from, to, input) {
     // console.log(conversion);
     // change the value within the field
     $(input).val(output);
-    // set the placeholders
-    $(input).attr('placeholder', '0.00000001');
-    // entry.attr('placeholder', '0.00000001');
-    // exit.attr('placeholder', '0.00000001');
 
   }
 
@@ -530,10 +578,6 @@ function convertCurrency(from, to, input) {
     // console.log(conversion);
     // change the value within the field
     $(input).val(output);
-    // set the placeholders
-    $(input).attr('placeholder', '0.00000001');
-    // entry.attr('placeholder', '0.00000001');
-    // exit.attr('placeholder', '0.00000001');
 
   }
 
@@ -557,10 +601,6 @@ function convertCurrency(from, to, input) {
     // console.log(conversion);
     // change the value within the field
     $(input).val(output);
-    // set the placeholders
-    $(input).attr('placeholder', '$1000.00');
-    // entry.attr('placeholder', '0.00000001');
-    // exit.attr('placeholder', '0.00000001');
 
   }
 
@@ -578,7 +618,7 @@ function convertCurrency(from, to, input) {
 // calculate a trade
 function calculateTrade() {
   // get the values
-  var currency = $('#init-investment').data('currency');
+  var usd = $('#init-investment').data('usd');
   var initInvestment = $('#init-investment').val().replace(/,/g , '');;
   var entryPrice = $('#entry-price').val().replace(/,/g , '');;
   var exitPrice = $('#exit-price').val().replace(/,/g , '');;
@@ -586,8 +626,6 @@ function calculateTrade() {
   var total = $('#tr-total');
   var profit = $('#tr-profit');
   var logo = document.getElementById("logo");
-
-  console.log('currency is: ' + currency);
 
   // reset the monkey when you retype
   logo.className = "";
@@ -600,39 +638,31 @@ function calculateTrade() {
   // var profitLoss = numeral(totalReturn - initInvestment).multiply('0.1');
   // var profitLoss = Math.floor((totalReturn / initInvestment) * 0.01)
 
-  console.log('totalProfit: ' + totalProfit);
-
-  // if you're currency is btc
-  if  (currency == 'btc') {
-
-    // format the totals
-    output = numeral(totalReturn).format('0.00000000');
-    total.text(numeral(output).format('0.00000000'));
-    profit.text(numeral(totalProfit).format('0.00000000'));
-
-  }
-
-  // if you're currency is eth
-  else if (currency == 'eth') {
-
-    // format the totals
-    output = numeral(totalReturn).format('0.00000000');
-    total.text(numeral(output).format('0.00000000'));
-    profit.text(numeral(totalProfit).format('0.00000000'));
-
-  }
-
-  // if your currency is usd
-  else {
-
-    // format the totals
-    output = numeral(totalReturn).format('0,0[.]00');
-    total.text(numeral(output).format('$ 0,0[.]00'));
-    profit.text(numeral(totalProfit).format('$ 0,0[.]00'));
-
-  }
-
-
+  // get your preferred currency
+  chrome.storage.local.get('currency', function(data) {
+    // the currency we have set
+    var currency = data.currency;
+    // how we show our profits
+    switch (currency) {
+      case 'btc':
+        // format the totals
+        output = numeral(totalReturn).format('0.00000000');
+        total.text(numeral(output).format('0.00000000') + ' BTC');
+        profit.text(numeral(totalProfit).format('0.00000000') + ' BTC');
+        break;
+      case 'eth':
+        // format the totals
+        output = numeral(totalReturn).format('0.00000000');
+        total.text(numeral(output).format('0.00000000') + ' ETH');
+        profit.text(numeral(totalProfit).format('0.00000000') + ' ETH');
+        break;
+      default:
+        // format the totals
+        output = numeral(totalReturn).format('0,0[.]00');
+        total.text(numeral(output).format('$ 0,0[.]00'));
+        profit.text(numeral(totalProfit).format('$ 0,0[.]00'));
+    } // end switch
+  }); // end get currency from local storage
 
   // display the percentage
   percentage.text(numeral(profitLoss).format('0%'));
@@ -657,8 +687,6 @@ function calculateTrade() {
       logo.className = "meh";
   }
 
-
-
 }
 
 // copy to clipboard
@@ -672,6 +700,10 @@ function copyHash() {
   document.execCommand("copy");
 }
 
+// format the field
+function formatValue(toCurrency) {
+
+}
 
 
 // when you click the create alert button
