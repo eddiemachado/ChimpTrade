@@ -215,20 +215,19 @@ jQuery( document ).ready(function($) {
         }
         else {
 
-          // have to hack this together
-          var price = search + '.usd';
-          // display all the hidden fields with data
+          // denable the fields when we have the data
           $('.alert-fetch-input, #btn-create-alert').removeAttr('disabled');
 
+          // the data we get back
           console.log(data);
-
-          // console.log(data[0]);
 
           // this is the way the data comes back from the API
           // data.solana.usd
 
-          // this is what i need since it's not hardcoded
+          // this is what i need since i don't want it hardcoded
           // data.(variable).usd
+          // for example, it may be data.bitcoin.usd or data.cardano.usd
+          // so how do i use the *search* variable?
 
           // example usage
           $('#alert-price').val(data.solana.usd);
