@@ -35,6 +35,7 @@ chrome.storage.local.get('currency', function(data) {
   var input = $('#init-investment');
   // populate the label
   $('#label-currency').text(data.currency);
+  $('#label-currency').attr('data-from', data.currency);
   // set it on the form
   switch (data.currency) {
     case 'btc':
@@ -158,11 +159,11 @@ function updatePrices() {
   });
   chrome.storage.sync.get('btcPrice', function(data) {
     // log the price for conversion
-    btcPrice = data.btcPrice;
+    document.getElementById('btcPrice').innerHTML = data.btcPrice;
   });
   chrome.storage.sync.get('ethPrice', function(data) {
     // log the price for conversion
-    ethPrice = data.ethPrice;
+    document.getElementById('ethPrice').innerHTML = data.ethPrice;
   });
 
 }
@@ -273,11 +274,16 @@ jQuery( document ).ready(function($) {
         }
         else {
 
+          var price = search + '.usd';
+          var coinName = Object.keys(data)[0];
+          var coinValue = data[coinName].usd;
+
           // denable the fields when we have the data
           $('.alert-fetch-input, #btn-create-alert').removeAttr('disabled');
 
           // the data we get back
           console.log(data);
+          console.log(coinValue)
 
           // this is the way the data comes back from the API
           // data.solana.usd
@@ -288,7 +294,7 @@ jQuery( document ).ready(function($) {
           // so how do i use the *search* variable?
 
           // example usage
-          $('#alert-price').val(data.solana.usd);
+          $('#alert-price').val(data[coinName].usd);
 
         }
 
@@ -359,6 +365,11 @@ jQuery( document ).ready(function($) {
     var exit = $('#exit-price');
     var input = $('#init-investment');
 
+    // update the from attribute
+    $('#label-currency').attr('data-from', $('#label-currency').text());
+    // get the from value
+    var from = $('#label-currency').data('from');
+
     // hide the dropdown
     $('#dropdown-currency').attr("hidden",true);
     // save your settings
@@ -368,14 +379,14 @@ jQuery( document ).ready(function($) {
       case 'btc':
         // change the placeholders
         $(input).attr('placeholder', '0.00000001');
-        $(entry).attr('placeholder', '0.000001');
-        $(exit).attr('placeholder', '0.000001');
+        $(entry).attr('placeholder', '0.00001');
+        $(exit).attr('placeholder', '0.00001');
         break;
       case 'eth':
         // change the placeholders
         $(input).attr('placeholder', '0.00000001');
-        $(entry).attr('placeholder', '0.000001');
-        $(exit).attr('placeholder', '0.000001');
+        $(entry).attr('placeholder', '0.00001');
+        $(exit).attr('placeholder', '0.00001');
         break;
       default:
         // change the placeholders
@@ -384,10 +395,17 @@ jQuery( document ).ready(function($) {
         $(exit).attr('placeholder', '2.00');
     }
 
+    console.log(from + ' -> ' + coin + ' ' + input);
+
+    console.log('before calculation from: ' + from);
+    // convert the values
+    convertCurrency(from, coin, input);
     // populate the label
     $('#label-currency').text(coin);
-    // add the data attribute
-    input.attr('data-currency', coin);
+    // update the from attribute after the calculation is done
+    $('#label-currency').attr('data-from', coin);
+
+    console.log('after calculation from: ' + from);
     return false;
   });
 
@@ -510,62 +528,52 @@ function calculateMarketCap() {
 
 // convert
 function convertCurrency(from, to, input) {
-
+  // get the value of what was inputted
   var value = $(input).val().replace(/,/g , '');
-  var usd = $('init-investment').data('usd');
   var conversion;
+  var btcPrice = $('#btcPrice').text();
+  var ethPrice = $('#ethPrice').text();
+  var btcRate = 1 / btcPrice;
+  var ethRate = 1 / ethPrice;
 
-  chrome.storage.sync.get('btcPrice', function(data) {
-    var btcPrice = data.btcPrice;
-  });
-
-  chrome.storage.sync.get('ethPrice', function(data) {
-    var ethPrice = data.ethPrice;
-  });
-
-
-  console.log('BTC Price: ' + btcPrice);
-  console.log('ETH Price: ' + ethPrice);
-
+  // if you aren't swapping
+  if (from === to) {
+    // do nothing
+    return;
+  }
   // if you're going usd -> btc
-  if ((from === 'usd') && (to === 'btc')) {
-
+  else if ((from === 'usd') && (to === 'btc')) {
     console.log('going usd->btc');
-
-    // calculate based on btc price
-    conversion = ( value / btcPrice );
-
-    console.log('Calulated value: ' + conversion);
-
+    console.log('Exchange rate: ' + btcRate);
+    // calculate based on btc exchange rate
+    conversion = ( value * btcRate );
     // format it
-    output = numeral(conversion).format('0.00000000');
-    // console.log(conversion);
+    output = numeral(conversion).format('0[.]00000000');
     // change the value within the field
     $(input).val(output);
   }
 
   // if you're going usd -> eth
   else if ((from === 'usd') && (to === 'eth')) {
-
-    console.log('usd->eth');
-    // calculate based on btc price
-    conversion = (value / ethPrice);
+    console.log('going usd->eth');
+    console.log('Exchange rate: ' + ethRate);
+    // calculate based on btc exchange rate
+    conversion = ( value * ethRate );
     // format it
-    output = numeral(conversion).format('0.00000000');
-    // console.log(conversion);
+    output = numeral(conversion).format('0[.]00000000');
     // change the value within the field
     $(input).val(output);
-
   }
 
   // if you're going btc -> eth
   else if ((from === 'btc') && (to === 'eth')) {
 
     console.log('btc->eth');
+
     // calculate based on btc price
     conversion = (value / ethPrice);
     // format it
-    output = numeral(conversion).format('0.00000000');
+    output = numeral(conversion).format('0[.]00000000');
     // console.log(conversion);
     // change the value within the field
     $(input).val(output);
@@ -575,35 +583,42 @@ function convertCurrency(from, to, input) {
   // if you're going eth -> btc
   else if ((from === 'eth') && (to === 'btc')) {
 
-  }
-
-  // if you're going btc -> usd
-  else if ((from === 'btc') && (to === 'usd')) {
-
-    console.log('going btc->usd');
-
+    console.log('going eth->btc');
+    // convert it to usd first
+    usdValue = ( value * 200 );
     // calculate based on btc price
-    conversion = ( value * 200 );
-
-    console.log('Calulated value: ' + conversion);
-
+    conversion = (value / btcPrice);
     // format it
-    output = numeral(conversion).format('0,0[.]00');
+    output = numeral(conversion).format('0[.]00000000');
     // console.log(conversion);
     // change the value within the field
     $(input).val(output);
 
   }
 
-  // if you're going eth -> usd
-  else {
-
-
-
+  // if you're going btc -> usd
+  else if ((from === 'btc') && (to === 'usd')) {
+    console.log('going btc->usd');
+    console.log('Exchange rate: ' + btcRate);
+    // calculate based on btc exchange rate
+    conversion = ( value * btcPrice );
+    // format it
+    output = numeral(conversion).format('0,0[.]00');
+    // change the value within the field
+    $(input).val(output);
   }
 
-
-
+  // if you're going eth -> usd
+  else {
+    console.log('going eth->usd');
+    console.log('Exchange rate: ' + ethRate);
+    // calculate based on btc exchange rate
+    conversion = ( value * ethPrice );
+    // format it
+    output = numeral(conversion).format('0,0[.]00');
+    // change the value within the field
+    $(input).val(output);
+  }
 }
 
 // calculate a trade
