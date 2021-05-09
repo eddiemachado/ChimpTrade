@@ -88,7 +88,7 @@ chrome.storage.local.get('alerts', function(data) {
   for (var i = 0; i < data.alerts.length; i++) {
     var obj = data.alerts[i];
     // add the alerts to the list
-    $('#alerts').prepend('<li id="alert-' + i + '" class="alert-item alert-' + obj.alertCoin + '"><div class="alert-content"><p class="alert-coin">' + obj.alertCoin + '</p><p class="alert-price">Target: <span class="alert-target">' + obj.alertPriceTarget + '</span></p></div><button class="alert-remove"></button></li>');
+    $('#alerts').prepend('<li id="alert-' + i + '" class="alert-item alert-' + obj.alertCoin + '"><div class="alert-content"><a href="https://www.coingecko.com/en/coins/' + obj.alertCoin + '" target="_blank" class="alert-coin">' + obj.alertCoin + '</a><p class="alert-price">Target: <span class="alert-target">' + obj.alertPriceTarget + '</span></p></div><button class="alert-remove" tabindex="-1">x</button></li>');
   } // for each one
 });
 
@@ -665,7 +665,7 @@ function CreateAlert(coin, price, url) {
     // set the new array value to the same key
     chrome.storage.local.set({ alerts: alerts }, function () {
         // add the alerts to the list
-        $('#alerts').prepend('<li id="alert-01" class="alert-itemclass="alert-item alert-' + coin + '""><div class="alert-content"><p class="alert-coin">' + coin + '</p><p class="alert-price">Target: <span class="alert-target">' + price + '</span></p></div><button class="alert-remove">x</button></li>');
+        $('#alerts').prepend('<li id="alert-01" class="alert-item alert-' + coin + '"><div class="alert-content"><a href="https://www.coingecko.com/en/coins/' + coin + '" target="_blank" class="alert-coin">' + coin + '</a><p class="alert-price">Target: <span class="alert-target">' + price + '</span></p></div><button class="alert-remove" tabindex="-1">x</button></li>');
     });
   });
 }

@@ -1239,6 +1239,15 @@ Sliding stylesheet
   top: 8px;
   right: 8px;
   opacity: 0.6;
+  background: transparent;
+  border: 0;
+  font-weight: 700;
+  color: var(--text_disabled);
+}
+
+.alert-remove:hover {
+  opacity: 1;
+  cursor: pointer;
 }
 
 .alert-coin {
