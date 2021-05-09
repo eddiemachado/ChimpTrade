@@ -134,26 +134,22 @@
         <div class="create-alert-form">
         <fieldset class="fieldset-full">
           <label class="input-label label-prefix">Coin</label>
-          <input id="select-coin" type="text" class="input first-focus input-prefix-suffix" name="alertCoin" value="" data-name="" placeholder="Bitcoin"/>
-          <label class="input-label label-suffix">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M3.68341 6.82009C3.41202 6.49443 3.6436 6 4.06752 6H11.9325C12.3564 6 12.588 6.49443 12.3166 6.82009L8.38411 11.5391C8.18421 11.7789 7.81579 11.7789 7.61589 11.5391L3.68341 6.82009Z" fill="black" fill-opacity="0.6"/>
-            </svg>
-          </label>
+          <input id="select-coin" type="text" class="input first-focus input-prefix-suffix" name="alertCoin" value="" data-name="" placeholder="Bitcoin" autocomplete="off" />
+          <label id="coin-validator" class="input-label label-suffix"></label>
           <small class="input-desc">You need to use 'Bitcoin', not 'BTC'</small>
         </fieldset>
 
         <div class="fieldset-flex">
           <fieldset>
           <label class="input-label label-prefix">Target Price</label>
-          <input id="alert-price" class="input alert-fetch-input input-target-live input-prefix-suffix" type="text" name="alertPrice" autocomplete="off" placeholder="1.93" value="" disabled />
+          <input id="alert-price" class="input alert-fetch-input input-target-live input-prefix-suffix" type="text" name="alertPrice" autocomplete="off" placeholder="1.93" value="" autocomplete="off" disabled />
           <label class="input-label label-suffix">USD</label>
         </fieldset>
       </div>
       <div class="flex">
         <fieldset>
           <label class="input-label label-prefix">Alert URL</label>
-          <input id="alert-url" class="input input-url alert-fetch-input input-prefix" type="text" name="alertURL" autocomplete="off" placeholder="https://app.uniswap.org" value="" disabled />
+          <input id="alert-url" class="input input-url alert-fetch-input input-prefix" type="text" name="alertURL" autocomplete="off" placeholder="https://app.uniswap.org" value="" autocomplete="off" disabled />
         </fieldset>
       </div>
 

@@ -807,6 +807,11 @@ Form Components
   border-color: transparent;
 }
 
+.input[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 #entry-price, #exit-price {
   padding: 0 12px 0 40px;
 }
@@ -1072,9 +1077,22 @@ Alerts tab
   display: block;
 }
 
+#coin-validator {
+  width: 24px;
+  height: 24px;
+  top: 12px;
+  background-image: url(img/validation.png);
+  background-position: 48px;
+  background-repeat: no-repeat;
+}
 
+#coin-validator.coin-found {
+background-position: 0;
+}
 
-
+#coin-validator.coin-error {
+background-position: -24px;
+}
 
 .footer-settings {
   border-top: 0;

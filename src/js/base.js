@@ -5,9 +5,7 @@ Base Functions
 // variables
 var btcPrice;
 var ethPrice;
-var alertCoins = [];
 var currency;
-
 
 // first get the color scheme if they've chosen one
 chrome.storage.sync.get('theme', function(data) {
@@ -90,58 +88,9 @@ chrome.storage.local.get('alerts', function(data) {
   for (var i = 0; i < data.alerts.length; i++) {
     var obj = data.alerts[i];
     // add the alerts to the list
-    $('#alerts').prepend('<li id="alert-' + i + '" class="alert-item"><div class="alert-content"><p class="alert-coin">' + obj.alertCoin + '</p><p class="alert-price">Target: <span class="alert-target">' + obj.alertPriceTarget + '</span></p></div><button class="alert-remove">x</button></li>');
+    $('#alerts').prepend('<li id="alert-' + i + '" class="alert-item alert-' + obj.alertCoin + '"><div class="alert-content"><p class="alert-coin">' + obj.alertCoin + '</p><p class="alert-price">Target: <span class="alert-target">' + obj.alertPriceTarget + '</span></p></div><button class="alert-remove"></button></li>');
   } // for each one
 });
-
-
-// getting the alert prices so we can keep tabs on prices
-function GetAlertPrices() {
-  // get the alerts and the api call
-  chrome.storage.local.get('alerts', function(data) {
-    for (var i = 0; i < data.alerts.length; i++) {
-      var obj = data.alerts[i];
-      // get the coin names so we can get the prices
-      alertCoins.push(obj.alertCoin);
-    }
-    // try to append that to an API call
-    var alertPriceAPI = 'https://api.coingecko.com/api/v3/simple/price?ids=' + alertCoins.toString() + '&vs_currencies=usd&include_market_cap=false';
-
-    // calling the api based on the set alerts
-    fetch(alertPriceAPI).then(function(res) {
-        // wait for response
-        if (res.status !== 200) {
-          console.log('api refused the connection');
-          return;
-        }
-        res.json().then(function(data) {
-
-
-            // the data we get back
-            console.log(data);
-
-            // this is the way the data comes back from the API
-            // data.solana.usd
-
-            // this is what i need since i don't want it hardcoded
-            // data.(variable).usd
-            // for example, it may be data.bitcoin.usd or data.cardano.usd
-            // so how do i use the *search* variable?
-
-
-
-
-        });
-      }).catch(function(err) {
-        console.log('api gave an error: ' + err);
-      });
-
-
-
-
-  }); // end get the local storage
-
-}
 
 // update the price in the header based on the gas prices
 function updatePrices() {
@@ -259,6 +208,7 @@ jQuery( document ).ready(function($) {
 
     var search = this.value;
     var priceAPI = 'https://api.coingecko.com/api/v3/simple/price?ids=' + search + '&vs_currencies=usd&include_market_cap=false';
+    var validator = $('#coin-validator');
 
     // calling the api
     fetch(priceAPI).then(function(res) {
@@ -269,35 +219,25 @@ jQuery( document ).ready(function($) {
       }
       res.json().then(function(data) {
 
-        if ( data.length > 0 ) {
-          console.log("Empty return, show error message")
-        }
-        else {
-
-          var price = search + '.usd';
-          var coinName = Object.keys(data)[0];
-          var coinValue = data[coinName].usd;
-
-          // denable the fields when we have the data
+        var coinName = Object.keys(data)[0];
+        // if your entry exists
+        if (coinName) {
+          // enable the fields when we have the data
           $('.alert-fetch-input, #btn-create-alert').removeAttr('disabled');
-
           // the data we get back
           console.log(data);
-          console.log(coinValue)
-
-          // this is the way the data comes back from the API
-          // data.solana.usd
-
-          // this is what i need since i don't want it hardcoded
-          // data.(variable).usd
-          // for example, it may be data.bitcoin.usd or data.cardano.usd
-          // so how do i use the *search* variable?
-
-          // example usage
           $('#alert-price').val(data[coinName].usd);
-
+          validator.removeClass('coin-error');
+          validator.addClass('coin-found');
         }
-
+        // if there's no match
+        else {
+          // disable the fields when we don't have the data
+          $('.alert-fetch-input, #btn-create-alert').attr('disabled', true);
+          validator.removeClass('coin-found');
+          validator.addClass('coin-error');
+          console.log("Empty return, show error message");
+        }
 
       });
     }).catch(function(err) {
@@ -725,7 +665,7 @@ function CreateAlert(coin, price, url) {
     // set the new array value to the same key
     chrome.storage.local.set({ alerts: alerts }, function () {
         // add the alerts to the list
-        $('#alerts').prepend('<li id="alert-01" class="alert-item"><div class="alert-content"><p class="alert-coin">' + coin + '</p><p class="alert-price">Target: <span class="alert-target">' + price + '</span></p></div><button class="alert-remove">Remove</button></li>');
+        $('#alerts').prepend('<li id="alert-01" class="alert-itemclass="alert-item alert-' + coin + '""><div class="alert-content"><p class="alert-coin">' + coin + '</p><p class="alert-price">Target: <span class="alert-target">' + price + '</span></p></div><button class="alert-remove">x</button></li>');
     });
   });
 }

@@ -7,10 +7,12 @@ These can't reference the dom at all and only exist to support the extension in 
 // catch errors
 try {
 
+  var alertCoins = [];
+
   // the hunt for gas prices
-  function getGasPrice() {
+  function GetGasPrice() {
     // the gas api
-    const apiCall = 'https://gasprice-proxy.herokuapp.com/provider/ethgaswatch';
+    var apiCall = 'https://gasprice-proxy.herokuapp.com/provider/ethgaswatch';
     // calling the api
     fetch(apiCall).then(function(res) {
       // wait for response
@@ -33,6 +35,55 @@ try {
       // console.log('api gave an error: ' + err);
     });
   } // end get gas price function
+
+  // getting the alert prices so we can keep tabs on prices
+  function GetAlertPrices() {
+    // get the alerts and the api call
+    chrome.storage.local.get('alerts', function(data) {
+      for (var i = 0; i < data.alerts.length; i++) {
+        var obj = data.alerts[i];
+        // get the coin names so we can get the prices
+        alertCoins.push(obj.alertCoin);
+      }
+      // try to append that to an API call
+      var alertPriceAPI = 'https://api.coingecko.com/api/v3/simple/price?ids=' + alertCoins.toString() + '&vs_currencies=usd&include_market_cap=false';
+
+      // calling the api based on the set alerts
+      fetch(alertPriceAPI).then(function(res) {
+          // wait for response
+          if (res.status !== 200) {
+            console.log('api refused the connection');
+            return;
+          }
+          res.json().then(function(data) {
+
+
+              // the data we get back
+              console.log(data);
+
+              // this is the way the data comes back from the API
+              // data.solana.usd
+
+              // this is what i need since i don't want it hardcoded
+              // data.(variable).usd
+              // for example, it may be data.bitcoin.usd or data.cardano.usd
+              // so how do i use the *search* variable?
+
+
+
+
+          });
+        }).catch(function(err) {
+          console.log('api gave an error: ' + err);
+        });
+
+
+
+
+    }); // end get the local storage
+
+  }
+
 
 
   // set a timer to update the gas
@@ -57,21 +108,9 @@ try {
       }
       // show the updated gas price
       getGasPrice();
+      GetAlertPrices();
     });
   });
-
-  // let's check your alerts and see if it's time yet
-  function CheckAlertPrices() {
-    // get the prices we have in storage
-
-    // check them against the price you set in alert
-
-    // if it matches then launch the alert
-
-    // if it hasn't then just do nothing & reset the alert thing in the badge
-
-
-  }
 
   // get the coin list for the marketcaps
   function GetCoinData() {
@@ -119,8 +158,9 @@ try {
 
   // initial calls when you start the extension
   GetCoinData();
-  getGasPrice();
+  GetGasPrice();
   GetAlertData();
+  GetAlertPrices();
   // se the initial currency to used
   chrome.storage.sync.set({ currency: 'usd' });
 
