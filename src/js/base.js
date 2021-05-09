@@ -322,33 +322,24 @@ jQuery( document ).ready(function($) {
     var value = $(this).val();
     var formatted;
     var currency = $('#label-currency').text();
-
-    console.log(currency);
-
-
+    // format the input
     if( value.length ) {
-
-      console.log('has a value');
-        // format the content
-        if (currency == 'usd') {
-          // format the value
-          formatted = numeral(value).format('0,0[.]00');
-        }
-        // or it's eth or btc
-        else {
-          // format the value
-          formatted = numeral(value).format('0.00000000');
-        }
+      // format the content
+      if (currency == 'usd') {
+        // format the value
+        formatted = numeral(value).format('0,0[.]00');
       }
-      // if it's still empty
+      // or it's eth or btc
       else {
-        console.log('the input is empty');
+        // format the value
+        formatted = numeral(value).format('0.00000000');
       }
-
-      // display the value formatted
-      $(this).val(formatted);
-
-
+    }
+    // if it's still empty
+    else {
+    }
+    // display the value formatted
+    $(this).val(formatted);
   });
 
   // display the coin select drop down
