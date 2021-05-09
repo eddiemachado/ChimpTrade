@@ -53,8 +53,24 @@ chrome.storage.sync.get('alertHelp', function(data) {
   }
 });
 
+// check if we have any alerts
+chrome.storage.sync.get('alerts', function(data) {
+  // if they haven't removed it, then let's show it
+  console.log(data);
+
+  for (var i = 0; i < data.length; i++) {
+    var obj = data[i];
+    // add the alerts to the list
+    $('#alerts').prepend('<li id="alert-01" class="alert-item"><div class="alert-content"><p class="alert-coin">' + obj.coin + '</p><p class="alert-price">Target: <span class="alert-target">' + obj.price + '</span></p></div><button class="alert-remove">Remove</button></li>');
+  } // for each one
+
+});
 
 
+// getting the alert info and displying it
+function GetAlerts() {
+
+}
 
 // update the price in the header based on the gas prices
 function updatePrices() {
@@ -93,7 +109,7 @@ function PopulateMarketCap() {
     for (var i = 0; i < data.coins.length; i++) {
       var obj = data.coins[i];
       // build the list
-      var item = '<div class="mc-item"><div class="mc-left"><img class="mc-image" src="' + obj.image + '" alt="' + obj.name + '" /><div class="mc-coin-name"><a href="https://www.coingecko.com/en/coins/' + obj.id + '" class="mc-item-name" target="_blank">' + obj.name + '</a><span class="mc-item-small tabular">' + numeral(obj.current_price).format('$0,0[.]00') + '</span></div></div> <div class="mc-right"><span class="mc-item-mc tabular">' + numeral(obj.market_cap).format('$0,0[.]00') + '</span><span class="mc-item-small tabular">Circ. Supply: ' + numeral(obj.circulating_supply).format('0,0') + '</span></div></div>';
+      var item = '<div class="mc-item"><div class="mc-left"><img class="mc-image" src="' + obj.image + '" alt="' + obj.name + '" /><div class="mc-coin-name"><a href="https://www.coingecko.com/en/coins/' + obj.id + '" class="mc-item-name" target="_blank" tabindex="-1">' + obj.name + '</a><span class="mc-item-small tabular">' + numeral(obj.current_price).format('$0,0[.]00') + '</span></div></div> <div class="mc-right"><span class="mc-item-mc tabular">' + numeral(obj.market_cap).format('$0,0[.]00') + '</span><span class="mc-item-small tabular">Circ. Supply: ' + numeral(obj.circulating_supply).format('0,0') + '</span></div></div>';
       // append it to the container
       $('#mc-list').append(item);
     } // for each one
@@ -101,11 +117,8 @@ function PopulateMarketCap() {
 }
 
 
-
-
 // createAlert('BTC', '$29,039.00');
 //chrome.notifications.onClicked.addListener(onClickNotification('https://google.com'));
-
 
 
 // initial price update & marketcap list when you open the popup
@@ -118,14 +131,8 @@ jQuery( document ).ready(function($) {
 
   // panels
   var panel1 = $('.panel-main');
-  var panel2 = $('.panel-settings');
-  var panel3 = $('.panel-donate');
 
-  // show the donate panel
-  $(document).on('click', '.btn-donate', function() {
-    $('body').addClass('show-donate');
-    return false;
-  });
+
   // go back to the main page
   $(document).on('click', '.btn-go-main', function() {
     $('body').removeClass('show-donate');
@@ -140,6 +147,7 @@ jQuery( document ).ready(function($) {
   $(document).on('click', '.tab', function() {
     // get the proper tab
     var targetTab = $(this).data('tab');
+    var logo = document.getElementById('logo');
     // remove current style
     $('.tab').removeClass('tab-current');
     // make this the current
@@ -150,6 +158,19 @@ jQuery( document ).ready(function($) {
     $('#' + targetTab).addClass('is-visible');
     // make the first input focused
     $('#' + targetTab + ' .first-focus').focus();
+    // change the monkey face
+    if (targetTab == 'tab-2') {
+      logo.className = "happy";
+    }
+    else if (targetTab == 'tab-3') {
+      logo.className = "something";
+    }
+    else if (targetTab == 'tab-0') {
+      logo.className = "donate";
+    }
+    else {
+      logo.className = "";
+    }
     return false;
   });
 
@@ -173,12 +194,12 @@ jQuery( document ).ready(function($) {
   //
 
   // calculating the marketcap
-  $(document).on('focusout', '#select-coin', function() {
+  $(document).on('keyup', '#select-coin', delay(function(e) {
 
     var search = this.value;
     var priceAPI = 'https://api.coingecko.com/api/v3/simple/price?ids=' + search + '&vs_currencies=usd&include_market_cap=false';
 
-    console.log(priceAPI);
+    // console.log(priceAPI);
 
     // calling the api
     fetch(priceAPI).then(function(res) {
@@ -197,12 +218,19 @@ jQuery( document ).ready(function($) {
           // have to hack this together
           var price = search + '.usd';
           // display all the hidden fields with data
-          $('.alert-fetch-input, #btn-create-alert').removeAttr('hidden');
+          $('.alert-fetch-input, #btn-create-alert').removeAttr('disabled');
 
           console.log(data);
 
-          console.log(data[0]);
+          // console.log(data[0]);
 
+          // this is the way the data comes back from the API
+          // data.solana.usd
+
+          // this is what i need since it's not hardcoded
+          // data.(variable).usd
+
+          // example usage
           $('#alert-price').val(data.solana.usd);
 
         }
@@ -215,7 +243,7 @@ jQuery( document ).ready(function($) {
 
 
 
-  });
+  }, 300));
 
   // when i exit the field, then format it properly
   $(document).on('focusout', '.input-mc-live, .input-target-live', function() {
@@ -226,8 +254,6 @@ jQuery( document ).ready(function($) {
     // display the value formatted
     $(this).val(formatted);
   });
-
-
 
   // when i exit the field, then format it properly
   $(document).on('focusout', '.input-trade-live', function() {
@@ -275,7 +301,7 @@ jQuery( document ).ready(function($) {
 
     chrome.storage.sync.get('currency', function(data) {
       // display the values in the header
-      console.log(data);
+      console.log('currency' + data);
     });
 
     // populate the label
@@ -351,12 +377,12 @@ jQuery( document ).ready(function($) {
     var price = $('#alert-price').val();
     var url = $('#alert-url').val();
 
-    console.log(coin + ' & ' + price + ' & ' + url);
+    // console.log(coin + ' & ' + price + ' & ' + url);
 
     // if the price isn't empty
     if (price != '') {
       // create the alert and store it
-      createAlert(coin, price, url);
+      CreateAlert(coin, price, url);
     } else {
       $('#alert-price').addClass('is-invalid');
       $('#alert-price').attr('placeholder' ,'Add a value');
@@ -366,10 +392,6 @@ jQuery( document ).ready(function($) {
     // then let's clear out the fields so that we can't spam them
     $('#alert-price').val('');
     $('#alert-url').val('');
-
-
-    // set the parameter for the rest of the form
-    chrome.storage.sync.set({ alertActive: true });
 
     return false;
   });
@@ -537,10 +559,12 @@ function calculateTrade() {
   var percentage = $("#tr-percentage");
   var total = $('#tr-total');
   var profit = $('#tr-profit');
+  var logo = document.getElementById("logo");
 
   console.log('currency is: ' + currency);
 
-
+  // reset the monkey when you retype
+  logo.className = "";
   // calculate the total
   totalReturn = (initInvestment / entryPrice) * exitPrice;
   // calculate the total profit
@@ -577,8 +601,8 @@ function calculateTrade() {
 
     // format the totals
     output = numeral(totalReturn).format('0,0[.]00');
-    total.text(numeral(output).format('0,0[.]00'));
-    profit.text(numeral(totalProfit).format('0,0[.]00'));
+    total.text(numeral(output).format('$ 0,0[.]00'));
+    profit.text(numeral(totalProfit).format('$ 0,0[.]00'));
 
   }
 
@@ -592,16 +616,19 @@ function calculateTrade() {
       profitLoss = "+" + profitLoss;
       percentage.removeClass("text-red");
       percentage.addClass("text-green");
+      logo.className = "sunglasses";
 
     // if you're in loss
   } else if (profitLoss < 0){
       percentage.removeClass("text-green");
       percentage.addClass("text-red");
+      logo.className = "sad";
 
     // if you break even
   } else {
       percentage.removeClass("text-red");
       percentage.removeClass("text-green");
+      logo.className = "meh";
   }
 
 
@@ -625,13 +652,13 @@ chrome.notifications.create({
     // function when the alert is created
     type: 'basic',
     iconUrl: 'src/img/32.png',
-    title: coin + ' Price Alert',
-    message: coin + ' has hit the target price of ' + price
+    title: 'coin' + ' Price Alert',
+    message: 'coin' + ' has hit the target price of ' + 'price'
   });
 
 
 
-function createAlert(coin, price, url) {
+function CreateAlert(coin, price, url) {
 
 
   // by passing an object you can define default values e.g.: []
@@ -639,11 +666,11 @@ function createAlert(coin, price, url) {
     // the input argument is ALWAYS an object containing the queried keys
     // so we select the key we need
     var alerts = data.alerts;
-
-    alerts.push({ alerts: 'alerts', HasBeenUploadedYet: false });
+    // add the new alert to the list
+    alerts.push({ alertCoin: coin, alertPriceTarget: price, alertURL: url });
 
     // set the new array value to the same key
-    chrome.storage.local.set({ alerts: alert }, function () {
+    chrome.storage.local.set({ alerts }, function () {
         // you can use strings instead of objects
         // if you don't  want to define default values
         chrome.storage.local.get('alerts', function (data) {
@@ -661,6 +688,8 @@ function createAlert(coin, price, url) {
   $('#alerts').prepend('<li id="alert-01" class="alert-item"><div class="alert-content"><p class="alert-coin">' + coin + '</p><p class="alert-price">Target: <span class="alert-target">' + price + '</span></p></div><button class="alert-remove">Remove</button></li>');
 
 }
+
+
 
 // when you click the alert, where does it go?
 function onClickNotification(targetUrl) {

@@ -44,11 +44,11 @@ try {
   chrome.alarms.onAlarm.addListener(alarm => {
 
     // let's check to see if there's been an alert
-    chrome.storage.sync.get('alertActive', function(data) {
+    chrome.storage.sync.get('alerts', function(data) {
       // display the values in the header
-      console.log(data);
+      // console.log(data);
       // if there's an active alert
-      if ( data.alertActive == 'true') {
+      if ( data.alerts != '') {
         // show the alert badge
         chrome.action.setBadgeText({text: 'Alert'});
         chrome.action.setBadgeBackgroundColor({ color: 'red' });
@@ -66,7 +66,7 @@ try {
 
     // check them against the price you set in alert
 
-    // if it matches then launch the alert 
+    // if it matches then launch the alert
 
     // if it hasn't then just do nothing & reset the alert thing in the badge
 

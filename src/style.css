@@ -296,20 +296,41 @@ header {
 
 
 #logo {
-  height: 52px;
-  width: 52px;
+  height: 66px;
+  width: 84px;
   margin: 0;
+  background-image: url(img/logo.png);
+  background-size: 1000%;
+  background-position: -2px 1px;
+  background-repeat: no-repeat;
 }
+
+#logo.sunglasses {
+  background-position-x: -758px;
+}
+
+#logo.happy {
+  background-position-x: -86px;
+}
+
+#logo.sad {
+  background-position-x: -338px;
+}
+
+#logo.meh {
+  background-position-x: -254px;
+}
+
+#logo.donate {
+  background-position-x: -674px;
+}
+
 
 #logo:hover {
   cursor: default;
+  background-position-x: -170px;
 }
 
-#logo img {
-  width: 52px;
-  height: 52px;
-  display: block;
-}
 
 
 
@@ -344,6 +365,37 @@ header {
   color: var(--text_light);
   cursor: pointer;
 }
+
+/** the tab control in the footer (Banana) **/
+
+footer .tab {
+  display: flex;
+  padding: 0;
+  width: 60%;
+  color: var(--text_light);
+  text-decoration: none;
+}
+
+footer .tab:hover {
+  color: var(--col_cta_hover);
+}
+
+footer .tab img {
+  width: 32px;
+  height: 32px;
+  display: block;
+  margin: 0 8px 0 0;
+}
+
+footer .tab span {
+  display: block;
+  font-size: var(--font_12);
+  font-weight: 700;
+  height: 32px;
+  line-height: 32px;
+}
+
+
 
 
 /** tab content **/
@@ -1034,56 +1086,8 @@ Donate tab
 *********/
 
 
-.panel-donate {
-  left: var(--popup_size_negative);
-}
 
-.header-donate {
-  display: block;
-}
 
-.panel-donate #logo {
-  right: 0;
-  position: absolute;
-  width: 72px;
-  height: 72px;
-  transform: rotate(-36deg);
-}
-
-.panel-donate #logo img {
-  width: 72px;
-  height: 72px;
-}
-
-/***
-Donate Button (Banana)
-***/
-
-.btn-donate {
-  display: flex;
-  width: 60%;
-  color: var(--text_light);
-  text-decoration: none;
-}
-
-.btn-donate:hover {
-  color: var(--col_cta_hover);
-}
-
-.btn-donate img {
-  width: 32px;
-  height: 32px;
-  display: block;
-  margin: 0 8px 0 0;
-}
-
-.btn-donate span {
-  display: block;
-  font-size: var(--font_12);
-  font-weight: 700;
-  height: 32px;
-  line-height: 32px;
-}
 
 
 
@@ -1096,12 +1100,14 @@ Donate Button (Banana)
 }
 
 .qr-code {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 auto;
+  display: block;
 }
 
 .qr-code img {
+  width: 148px;
+  display: block;
+  margin: 0 auto;
+  padding: 4px;
 }
 
 .donate-content p {
@@ -1130,7 +1136,7 @@ Donate Button (Banana)
 }
 
 .btn-copy:hover {
-  color: var(--col_green-05);
+  color: var(--col_cta_hover);
 }
 
 .copyright {
