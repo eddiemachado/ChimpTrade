@@ -57,17 +57,34 @@ try {
           }
           res.json().then(function(data) {
 
+            // the data we get back
+            console.log(data);
 
-              // the data we get back
-              console.log(data);
+            for (var i = 0; i < data.length; i++) {
+              var obj = data[i];
 
-              // this is the way the data comes back from the API
-              // data.solana.usd
+              var coinName = Object.keys(data)[0];
 
-              // this is what i need since i don't want it hardcoded
-              // data.(variable).usd
-              // for example, it may be data.bitcoin.usd or data.cardano.usd
-              // so how do i use the *search* variable?
+              // find the matching div
+
+              // insert the current price
+              // $('.alert-current-price').text(data[coinName].usd);
+
+              console.log(obj);
+
+              var one = obj[0],
+                  two = data[1];
+            }
+
+            console.log(two);
+
+            // find the right div and put the price in
+            // $('.alert-current-price').text('$45.03');
+
+
+
+
+              // find the proper container
 
 
 
@@ -135,7 +152,7 @@ try {
   // get the coin list of all alerts (btc & eth are defaults)
   function GetAlertData() {
     // the gas api
-    const apiCall = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum&vs_currencies=usd&include_market_cap=false';
+    const apiCall = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin%2Cethereum%2Cbinancecoin&vs_currencies=usd';
     // calling the api
     fetch(apiCall).then(function(res) {
       // wait for response
@@ -148,6 +165,7 @@ try {
         // push that prices into storage
         chrome.storage.sync.set({ btcPrice: data.bitcoin.usd });
         chrome.storage.sync.set({ ethPrice: data.ethereum.usd });
+        chrome.storage.sync.set({ bnbPrice: data.binancecoin.usd });
 
       });
     }).catch(function(err) {

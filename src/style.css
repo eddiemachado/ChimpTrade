@@ -90,23 +90,19 @@ Theme Agnostic Variables
   --font_16: 16px;
   --font_20: 20px;
 
-  --col_yellow_01: #FFF7D6;
-  --col_yellow_02: #FFE882;
-  --col_yellow_03: #FFC796;
-  --col_pink_01: #FFD6E9;
-  --col_pink_02: #FFC3DF;
-  --col_pink_03: #FFA3D4;
-  --col_green_01: #DCF9EB;
-  --col_green_02: #79E8B3;
-  --col_green_03: #5DC892;
-  --col_blue_01: #EBF9FF;
-  --col_blue_02: #9AE1FF;
-  --col_blue_03: #81B0FE;
-  --col_purple_01: #EBEBFF;
-  --col_purple_02: #C5C6FF;
-  --col_purple_03: #A2A3F5;
 
-  --col_focus: #607AA9;
+  --col_pink_01: #C31432;
+
+  --col_green_01: #DCF9EB;
+
+  --col_blue_01: #0078E0;
+  --col_blue_02: #004e92;
+  --col_blue_03: #000428;
+
+
+  --col_focus: var(--col_blue_01);
+
+  --col_white: #FFFFFF;
 
   --col_neutral_2: #D6D6E1;
   --col_neutral_3: #ACADC1;
@@ -133,41 +129,37 @@ Light mode colors
 body[data-theme='light'] {
 
   /* extension background */
-  --col_bg: #fff;
+  --col_bg: var(--col_white);
 
   /* header bg */
   --img_header: url(img/bg.png);
 
   /* text colors */
-  --text_default: rgba(28,17,13,0.89);
-  --text_light: rgba(28,17,13,0.68);
-  --text_disabled: rgba(28,17,13,0.38);
-  --text_default_inverse: rgba(252,252,252,0.89);
+  --text_default: rgba(0,22,41,0.89);
+  --text_light: rgba(0,22,41,0.68);
+  --text_disabled: rgba(0,22,41,0.38);
+  --text_default_inverse: rgba(235,245,255,0.89);
+  --text_placeholder: rgba(0,22,41,0.3);
 
   /* neutral colors */
-  --col_neutral_1: #F0F0F5;
+  --col_neutral_1: rgba(109,109,151,0.10);
 
-  /* forms */
-  --col_trading_bg: var(--col_purple_01);
-  --col_mc_bg: var(--col_yellow_01);
-  --col_alert_bg: var(--col_green_01);
+  --col_input_bg: var(--col_white);
+  --col_input_border: var(--col_neutral_1);
 
-  --col_input_bg: #fff;
-  --col_input_border: #F0F0F5;
-
-  --col__dropdown_bg: #FFF;
+  --col__dropdown_bg: var(--col_white);
   --col_highlight: var(--col_neutral_1);
 
-  --col_toggle_active: #FFF;
-  --col_toggle_active_icon: var(--col_yellow_01);
+  --col_toggle_active: var(--col_white);
+  --col_toggle_active_icon: var(--col_blue_01);
 
   /** help alerts **/
   --col_info: var(--col_blue_01);
 
   /* cta */
-  --col_cta: var(--col_green_02);
-  --col_cta_hover: var(--col_green_03);
-  --col_cta_text: var(--text_default);
+  --col_cta: var(--col_blue_01);
+  --col_cta_hover: var(--col_blue_02);
+  --col_cta_text: var(--text_default_inverse);
 
 }
 
@@ -184,20 +176,16 @@ body[data-theme='dark'] {
   --img_header: url(img/bg-dark.png);
 
   /* text colors */
-  --text_default: rgba(252,252,252,0.89);
-  --text_light: rgba(252,252,252,0.68);
-  --text_disabled: rgba(252,252,252,0.38);
-  --text_default_inverse: rgba(28,17,13,0.89);
+  --text_default: rgba(235,245,255,0.89);
+  --text_light: rgba(235,245,255,0.68);
+  --text_disabled: rgba(235,245,255,0.38);
+  --text_default_inverse: rgba(0,22,41,0.89);
+  --text_placeholder: rgba(235,245,255,0.3);
 
   --text_highlight: var(--col_yellow_02);
 
   /* neutral colors */
   --col_neutral_1: #1C1E21;
-
-  /* forms */
-  --col_trading_bg: var(--col_blue_02);
-  --col_mc_bg: var(--col_yellow_02);
-  --col_alert_bg: var(--col_green_02);
 
   --col_input_bg: #292A2D;
   --col_input_border: #292A2D;
@@ -206,15 +194,15 @@ body[data-theme='dark'] {
   --col_highlight: #1C1E21;
 
   --col_toggle_active: #292A2D;
-  --col_toggle_active_icon: var(--col_yellow_01);
+  --col_toggle_active_icon: var(--col_blue_01);
 
   /** help alerts **/
   --col_info: #090A0B;
 
   /* cta */
-  --col_cta: var(--col_yellow_01);
-  --col_cta_hover: var(--col_yellow_02);
-  --col_cta_text: var(--text_default_inverse);
+  --col_cta: var(--col_blue_01);
+  --col_cta_hover: var(--col_blue_02);
+  --col_cta_text: var(--text_default);
 
 }
 
@@ -246,6 +234,13 @@ strong, .strong {
   color: red;
 }
 
+a {
+  color: var(--col_cta);
+}
+
+a:hover, a:focus {
+  color: var(--col_cta_hover);
+}
 
 
 /***
@@ -273,7 +268,6 @@ body {
   width: var(--popup_size);
   height: 100%;
   position: absolute;
-  transition: left 200ms ease;
 }
 
 .panel-main {
@@ -303,6 +297,7 @@ header {
   background-size: 1000%;
   background-position: -2px 1px;
   background-repeat: no-repeat;
+  transition: transform 200ms ease;
 }
 
 #logo.sunglasses {
@@ -315,6 +310,7 @@ header {
 
 #logo.sad {
   background-position-x: -338px;
+  transform: rotate(-12deg);
 }
 
 #logo.meh {
@@ -325,12 +321,31 @@ header {
   background-position-x: -674px;
 }
 
+/***
+Logo Animations
+***/
+
+
+
 
 #logo:hover {
   cursor: default;
   background-position-x: -170px;
 }
 
+#alert-update {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 200px;
+  padding: 12px 24px 12px 12px;
+  font-size: var(--font_12);
+  line-height: 20px;
+  border-radius: 4px;
+  background-color: var(--col_white);
+  box-shadow: var(--layer_1);
+  z-index: 9999;
+}
 
 
 
@@ -559,14 +574,25 @@ footer .tab span {
   font-weight: 400;
 }
 
-small {
-  color: var(--text_light);
+.gas-time {
   display: block;
   font-size: 10px;
+  font-weight: 400;
   line-height: 12px;
+  color: var(--text_light);
+}
+
+small,
+.small {
+  color: var(--text_light);
+  display: block;
+  font-size: var(--font_12) !important;
+  line-height: 20px !important;
   position: relative;
   font-weight: 400;
 }
+
+
 
 footer {
   width: 100%;
@@ -718,9 +744,13 @@ label {
 .input-desc {
   font-size: var(--font_12);
   line-height: 24px;
-  margin: 0 12px;
+  margin: 4px 12px 0 4px;
   display: block;
   text-align: right;
+}
+
+.input-desc.is-wrong {
+  color: var(--col_pink_01);
 }
 
 
@@ -771,6 +801,11 @@ Form Components
 .select:-webkit-autofill:focus {
   outline: 0;
   border-color: var(--col_focus);
+}
+
+.input::placeholder,
+.select::placeholder {
+  color: var(--text_placeholder);
 }
 
 .input.is-invalid {
@@ -943,8 +978,8 @@ Trading tab
 
 
 
-.trade-calculator {
-  background-color: var(--col_trading_bg);
+#trade-calculator {
+  background-color: var(--col_neutral_1);
   padding: 8px;
   border-radius: 8px;
 }
@@ -953,12 +988,24 @@ Trading tab
   font-weight: 900;
 }
 
+.trade-positive {
+  background: linear-gradient(-45deg, #1D976C, #93F9B9);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+}
+
+.trade-negative {
+  background: linear-gradient(-45deg, #bc4e9c, #f80759);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+}
+
 /***
 Market Cap tab
 ***/
 
-.mc-calculator {
-  background-color: var(--col_mc_bg);
+#mc-calculator {
+  background-color: var(--col_neutral_1);
   padding: 8px;
   border-radius: 8px;
 }
@@ -1050,8 +1097,8 @@ Market Cap tab
 Alerts tab
 ***/
 
-.create-alert-form {
-  background-color: var(--col_alert_bg);
+#create-alert-form {
+  background-color: var(--col_neutral_1);
   padding: 8px;
   border-radius: 8px;
 
@@ -1123,7 +1170,7 @@ Donate tab
 }
 
 .qr-code img {
-  width: 148px;
+  width: 250px;
   display: block;
   margin: 0 auto;
   padding: 4px;
@@ -1140,7 +1187,7 @@ Donate tab
 }
 
 #address {
-  padding: 0 64px 0 56px;
+  padding: 0 64px 0 16px;
   overflow: hidden;
 }
 
@@ -1224,7 +1271,7 @@ Sliding stylesheet
 .alert-item {
   position: relative;
   width: 100%;
-  padding: 8px;
+  padding: 16px;
   margin: 0 0 8px 0;
   font-size: var(--font_14);
   border: 1px solid var(--col_neutral_1);
@@ -1234,7 +1281,8 @@ Sliding stylesheet
 .alert-item:hover {
 }
 
-.alert-remove {
+.alert-remove,
+.alert-update-remove {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -1245,16 +1293,98 @@ Sliding stylesheet
   color: var(--text_disabled);
 }
 
-.alert-remove:hover {
+.alert-remove:hover,
+.alert-update-remove:hover {
   opacity: 1;
   cursor: pointer;
 }
 
 .alert-coin {
   font-weight: 700;
+  color: var(--text_default);
+  text-decoration: none;
+}
+
+.alert-coin:hover {
+  color: var(--col_cta_hover);
+  text-decoration: underline;
+}
+
+.alert-current-price {
+  margin-right: 8px;
 }
 
 .alert-price {
   font-size: var(--font_12);
   color: var(--text_light);
+}
+
+
+.alert-right {
+  position: absolute;
+  right: 0;
+  height: 50%;
+  width: 32px;
+  border-left: 1px solid var(--col_neutral_1);
+}
+
+.alert-right:hover {
+  cursor: pointer;
+}
+
+
+.alert-right svg {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -8px 0 0 -8px;
+  opacity: 0.2;
+  transition: opacity 160ms ease;
+}
+
+.alert-right:hover svg {
+  opacity: 1;
+}
+
+.alert-close {
+  top: 0;
+  border-right: 0;
+  border-top: 0;
+  border-bottom: 1px solid var(--col_neutral_1);
+  background: transparent;
+  border-radius: 0 4px 0 0;
+}
+
+.alert-link {
+  bottom: 0;
+  border-radius: 0 0 4px 0;
+}
+
+.alert-active {
+  color: var(--col_white);
+  background: linear-gradient(-45deg, #b92b27, #1565C0);
+	background-size: 400% 400%;
+	animation: gradient 10s ease infinite;
+}
+
+.alert-active svg {
+  opacity: 0.5;
+}
+
+.alert-active svg path {
+  fill: var(--text_default_inverse);
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
