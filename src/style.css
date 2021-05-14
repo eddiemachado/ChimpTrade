@@ -118,7 +118,7 @@ Theme Agnostic Variables
              0 4px 8px rgba(16,16,25,0.032),
              0 0 2px 2px rgba(16,16,25,0.03);
 
-  --layer_3: 0 4px 16px rgba(0,0,0,0.15);
+  --layer_3: 0 4px 16px rgba(0,0,0,0.05);
 
 }
 
@@ -154,12 +154,14 @@ body[data-theme='light'] {
   --col_toggle_active_icon: var(--col_blue_01);
 
   /** help alerts **/
-  --col_info: var(--col_blue_01);
+  --text_info: var(--text_default);
 
   /* cta */
   --col_cta: var(--col_blue_01);
   --col_cta_hover: var(--col_blue_02);
   --col_cta_text: var(--text_default_inverse);
+
+  --alert_icons: var(--col_blue_03);
 
 }
 
@@ -197,12 +199,14 @@ body[data-theme='dark'] {
   --col_toggle_active_icon: var(--col_blue_01);
 
   /** help alerts **/
-  --col_info: #090A0B;
+  --text_info: var(--text_default_inverse);
 
   /* cta */
   --col_cta: var(--col_blue_01);
   --col_cta_hover: var(--col_blue_02);
   --col_cta_text: var(--text_default);
+
+  --alert_icons: var(--col_white);
 
 }
 
@@ -436,8 +440,10 @@ footer .tab span {
 
 .help {
   padding: 12px 32px 12px 16px;
-  background: var(--col_info);
-  color: var(--text_default);
+  background: linear-gradient(-45deg, #ffeeee, #ddefbb);
+	background-size: 400% 400%;
+	animation: gradient 10s ease infinite;
+  color: var(--text_info);
   border-radius: 8px;
   margin: 0 0 16px;
   position: relative;
@@ -446,14 +452,6 @@ footer .tab span {
 .help p {
   font-size: var(--font_12);
   line-height: 20px;
-}
-
-.help a {
-  color: var(--text_default);
-}
-
-.help a:hover {
-  color: var(--text_light);
 }
 
 .help .close {
@@ -467,7 +465,7 @@ footer .tab span {
   outline: none;
   border: 0;
   padding: 4px;
-  opacity: 0.7;
+  opacity: 0.5;
 }
 
 .close svg {
@@ -477,7 +475,7 @@ footer .tab span {
 }
 
 .close svg path {
-  fill: var(--text_default);
+  fill: rgba(0,22,41,0.89);
 }
 
 .close:hover {
@@ -693,7 +691,13 @@ fieldset {
   padding-right: 8px;
 }
 
+.fieldset-tall .input-label {
+  top: 6px;
+}
 
+.fieldset-tall .label-suffix {
+  top: 27px;
+}
 
 
 label {
@@ -752,6 +756,9 @@ label {
 .input-desc.is-wrong {
   color: var(--col_pink_01);
 }
+
+
+
 
 
 /*********
@@ -832,25 +839,33 @@ Form Components
   font-size: var(--font_12);
 }
 
+.fieldset-tall .input {
+  height: 56px;
+  padding: 16px 12px 0 16px;
+}
+
+.fieldset-tall .input-prefix-suffix {
+  padding-right: 44px;
+}
+
+.fieldset-tall #alert-current-price {
+  padding-right: 36px;
+  margin-bottom: 8px;
+}
+
 .input + .input {
   margin-left: 8px;
   width: 170%;
 }
 
-.input[readonly] {
-  font-size: var(--font_12);
-  border-color: transparent;
+.input[readonly]:focus {
+  border-color: var(--col_neutral_1);
 }
 
 .input[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-#entry-price, #exit-price {
-  padding: 0 12px 0 40px;
-}
-
 
 .select-full {
   width: 100%;
@@ -902,6 +917,7 @@ Buttons
 
 .btn:hover {
   background: var(--col_cta_hover);
+  color: var(--col_cta_text);
   cursor: pointer;
 }
 
@@ -1189,6 +1205,7 @@ Donate tab
 #address {
   padding: 0 64px 0 16px;
   overflow: hidden;
+  font-size: var(--font_12);
 }
 
 .btn-copy {
@@ -1249,16 +1266,6 @@ Sliding stylesheet
 }
 
 
-.alerts-set {
-  padding: 24px 0 12px;
-}
-
-.alerts-set h3 {
-  padding: 0 8px ;
-  display: block;
-}
-
-
 #alerts {
   list-style: none;
   padding: 0;
@@ -1276,9 +1283,17 @@ Sliding stylesheet
   font-size: var(--font_14);
   border: 1px solid var(--col_neutral_1);
   border-radius: 4px;
+  transition: border-color 140ms ease, box-shadow 200ms ease;
 }
 
 .alert-item:hover {
+  border-color: var(--col_neutral_2);
+  box-shadow: var(--layer_3);
+}
+
+.alert-item:hover .alert-right {
+  display: block;
+  opacity: 1;
 }
 
 .alert-remove,
@@ -1325,7 +1340,9 @@ Sliding stylesheet
   right: 0;
   height: 50%;
   width: 32px;
-  border-left: 1px solid var(--col_neutral_1);
+  display: none;
+  opacity: 0;
+  transition: opacity 140ms ease;
 }
 
 .alert-right:hover {
@@ -1344,15 +1361,21 @@ Sliding stylesheet
   transition: opacity 160ms ease;
 }
 
+.alert-right svg path {
+  fill: var(--alert_icons);
+}
+
 .alert-right:hover svg {
   opacity: 1;
 }
 
+.alert-right:hover svg path {
+  fill: var(--alert_icons);
+}
+
 .alert-close {
   top: 0;
-  border-right: 0;
-  border-top: 0;
-  border-bottom: 1px solid var(--col_neutral_1);
+  border: 0;
   background: transparent;
   border-radius: 0 4px 0 0;
 }
@@ -1367,6 +1390,11 @@ Sliding stylesheet
   background: linear-gradient(-45deg, #b92b27, #1565C0);
 	background-size: 400% 400%;
 	animation: gradient 10s ease infinite;
+}
+
+.alert-active .alert-right {
+  display: block;
+  opacity: 1;
 }
 
 .alert-active svg {

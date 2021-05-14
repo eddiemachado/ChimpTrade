@@ -8,6 +8,7 @@ These can't reference the dom at all and only exist to support the extension in 
 try {
 
   var alertCoins = [];
+  var alertPrices = [];
 
   // the hunt for gas prices
   function GetGasPrice() {
@@ -29,7 +30,7 @@ try {
         // update the badge with the normal value
         chrome.action.setBadgeText({text: String(data.normal.gwei)});
         // if the gas is high, show it in red
-        chrome.action.setBadgeBackgroundColor({ color: '#252525' });
+        chrome.action.setBadgeBackgroundColor({ color: '#1565C0' });
       });
     }).catch(function(err) {
       // console.log('api gave an error: ' + err);
@@ -47,61 +48,33 @@ try {
       }
       // try to append that to an API call
       var alertPriceAPI = 'https://api.coingecko.com/api/v3/simple/price?ids=' + alertCoins.toString() + '&vs_currencies=usd&include_market_cap=false';
-
       // calling the api based on the set alerts
       fetch(alertPriceAPI).then(function(res) {
           // wait for response
           if (res.status !== 200) {
-            console.log('api refused the connection');
+            // api refused connection
             return;
           }
           res.json().then(function(data) {
+            for (var i = 0; i < Object.keys(data).length; i++) {
+              var coin = Object.keys(data)[i];
+              var value = data[coin].usd;
+              // add the new alert to the list
+              alertPrices.push({ alertCoin: coin, alertCurrentPrice: value });
+              chrome.storage.sync.set({ alertPrices: alertPrices }, function(data) {});
+              // now let's see if we need to fire an alert
+              // ShowAlert(coin, value, 'http://google.com');
 
-            // the data we get back
-            console.log(data);
+                // then update the boolean for the badge
 
-            for (var i = 0; i < data.length; i++) {
-              var obj = data[i];
 
-              var coinName = Object.keys(data)[0];
-
-              // find the matching div
-
-              // insert the current price
-              // $('.alert-current-price').text(data[coinName].usd);
-
-              console.log(obj);
-
-              var one = obj[0],
-                  two = data[1];
             }
-
-            console.log(two);
-
-            // find the right div and put the price in
-            // $('.alert-current-price').text('$45.03');
-
-
-
-
-              // find the proper container
-
-
-
-
           });
         }).catch(function(err) {
-          console.log('api gave an error: ' + err);
+          // api gave an error
         });
-
-
-
-
     }); // end get the local storage
-
   }
-
-
 
   // set a timer to update the gas
   chrome.alarms.create('update_gas',{
@@ -113,19 +86,18 @@ try {
 
     // let's check to see if there's been an alert
     chrome.storage.sync.get('alerts', function(data) {
-      // display the values in the header
-      // console.log(data);
-      // if there's an active alert
+      /*
       if ( data.alerts != '') {
         // show the alert badge
         chrome.action.setBadgeText({text: 'Alert'});
-        chrome.action.setBadgeBackgroundColor({ color: 'red' });
+        chrome.action.setBadgeBackgroundColor({ color: '#b92b27' });
         // don't update the gas price
         return;
       }
+      */
       // show the updated gas price
       getGasPrice();
-      GetAlertPrices();
+      // GetAlertPrices();
     });
   });
 
@@ -173,12 +145,26 @@ try {
     });
   }
 
+  // launch an alert within Chrome
+  function ShowAlert(coin, price, url) {
+    // send it to chrome
+    chrome.notifications.create({
+        // function when the alert is created
+        type: 'basic',
+        iconUrl: 'src/img/32.png',
+        title: coin + ' Price Alert',
+        message: coin + ' has hit the target price of ' + price
+    });
+    // make it clickable
+    // chrome.notifications.onClicked.addListener(onClickNotification(url));
+  }
+
 
   // initial calls when you start the extension
   GetCoinData();
   GetGasPrice();
-  GetAlertData();
-  GetAlertPrices();
+  // GetAlertData();
+  // GetAlertPrices();
   // se the initial currency to used
   chrome.storage.sync.set({ currency: 'usd' });
 

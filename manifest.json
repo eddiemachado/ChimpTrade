@@ -1,7 +1,7 @@
 {
-  "name": "ChimpTrade",
-  "version": "1.0",
-  "description": "A set of tools to help you make the best trades. It's basically a glorified calculator.",
+  "name": "kuriputo",
+  "version": "0.1",
+  "description": "A set of tools to help you make the best trades. It's basically a glorified calculator. This is still a beta project so updates are coming soon!",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
