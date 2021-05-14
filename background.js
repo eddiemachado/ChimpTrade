@@ -86,7 +86,6 @@ try {
 
     // let's check to see if there's been an alert
     chrome.storage.sync.get('alerts', function(data) {
-      /*
       if ( data.alerts != '') {
         // show the alert badge
         chrome.action.setBadgeText({text: 'Alert'});
@@ -94,7 +93,6 @@ try {
         // don't update the gas price
         return;
       }
-      */
       // show the updated gas price
       getGasPrice();
       // GetAlertPrices();
@@ -163,8 +161,8 @@ try {
   // initial calls when you start the extension
   GetCoinData();
   GetGasPrice();
-  // GetAlertData();
-  // GetAlertPrices();
+  GetAlertData();
+  GetAlertPrices();
   // se the initial currency to used
   chrome.storage.sync.set({ currency: 'usd' });
 
