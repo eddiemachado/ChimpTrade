@@ -88,8 +88,8 @@ try {
     chrome.storage.sync.get('alerts', function(data) {
       if ( data.alerts != '') {
         // show the alert badge
-        chrome.action.setBadgeText({text: 'Alert'});
-        chrome.action.setBadgeBackgroundColor({ color: '#b92b27' });
+        // chrome.action.setBadgeText({text: 'Alert'});
+        // chrome.action.setBadgeBackgroundColor({ color: '#b92b27' });
         // don't update the gas price
         return;
       }
