@@ -1,6 +1,6 @@
 {
   "name": "kuriputo: Crypto Trade Calculator",
-  "version": "0.1",
+  "version": "0.3",
   "description": "A set of tools to help you make the best trades. This project is in beta so updates are coming soon!",
   "manifest_version": 3,
   "background": {
@@ -9,8 +9,7 @@
   "permissions": [
     "alarms",
     "storage",
-    "notifications",
-    "fontSettings"
+    "notifications"
   ],
   "web_accessible_resources": [{
     "resources": ["src/fonts/*","src/img/*","src/js/*"],
